@@ -100,7 +100,7 @@ public class ControllerVisualizer implements Initializable {
         boolean checkBoxSelected = isJulia.isSelected();
         if (checkBoxSelected) {
             gc.clearRect(0, 0, canVis.getWidth(), canVis.getHeight());
-            if (Integer.parseInt(convTF.getText()) >= 1 && Integer.parseInt(convTF.getText()) >= 1000) {
+            if (Integer.parseInt(convTF.getText()) >= 1 && Integer.parseInt(convTF.getText()) <= 1000) {
                 brot = new Mandelbrot(Integer.parseInt(convTF.getText()), JULIA_RE_MIN, JULIA_RE_MAX, JULIA_IM_MIN, JULIA_IM_MAX, 0.3, -0.5);
             } else {
                 brot = new Mandelbrot(15, JULIA_RE_MIN, JULIA_RE_MAX, JULIA_IM_MIN, JULIA_IM_MAX, 0.3, -0.5);
