@@ -5,10 +5,10 @@
 
 + ...see a visualization of a fractal (Mandelbrot)
 + ...adjust the color scheme of the visualization to make it more beautiful
-+ ...pick his own combination of colors for the visualization to make it more customizable while (probably) becoming more beautiful
++ ...pick my own combination of colors for the visualization to make it more customizable while (probably) becoming more beautiful
 + ...initially adjust the zoom level of the shown graphic* to test and play
 + ...easily register and log in to the app to have a personal profile
-+ ...save his combinations as custom color schemes**
++ ...save combinations as custom color schemes**
 + ...switch between fractals (e.g. Julia, Apollonian gasket,...)
 + ...see a history of used zoom / color / fractal combinations
 + ...choose from different computation methods to compare how they perform
