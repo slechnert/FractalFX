@@ -235,7 +235,8 @@
                                         </LinearGradient>
                                     </textFill>
                                     <tooltip>
-                                        <Tooltip text="Enter a distortion factor for each base color value"/>
+                                        <Tooltip
+                                                text="Enter a distortion factor for each base color value (Range [0.0, 10]"/>
                                     </tooltip>
                                 </Label>
                                 <TextField fx:id="customR" alignment="CENTER" maxWidth="75.0" minWidth="80.0"

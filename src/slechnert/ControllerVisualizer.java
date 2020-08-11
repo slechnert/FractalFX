@@ -9,11 +9,7 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
 
-import java.io.File;
-import java.io.InputStream;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.HashSet;
 import java.util.ResourceBundle;
@@ -29,7 +25,6 @@ public class ControllerVisualizer implements Initializable {
     final private double JULIA_RE_MAX = 1.5;
     final private double JULIA_IM_MIN = -1.5;
     final private double JULIA_IM_MAX = 1.5;
-    //    ColorPicker convergenceColorPicker;
     public Mandelbrot brot;
     GraphicsContext gc;
 
@@ -56,7 +51,6 @@ public class ControllerVisualizer implements Initializable {
 
     @FXML
     public TextField ziTF;
-
 
     @FXML
     public void setZ() {
@@ -113,7 +107,6 @@ public class ControllerVisualizer implements Initializable {
                 brot = new Mandelbrot(Integer.parseInt(convTF.getText()), MANDELBROT_RE_MIN, MANDELBROT_RE_MAX, MANDELBROT_IM_MIN, MANDELBROT_IM_MAX, 0, 0);
             } else {
                 brot = new Mandelbrot(15, MANDELBROT_RE_MIN, MANDELBROT_RE_MAX, MANDELBROT_IM_MIN, MANDELBROT_IM_MAX, 0, 0);
-
             }
             zTF.setDisable(true);
             ziTF.setDisable(true);
@@ -143,12 +136,10 @@ public class ControllerVisualizer implements Initializable {
                 double t1 = convergenceValue / brot.getConvergenceSteps(); //(50.0 .. )
                 double c1 = Math.min(255 * 2 * t1, 255);
                 double c2 = Math.max(255 * (2 * t1 - 1), 0);
-//                double c1 = 50d;
-//                double c2 = 200d;
 
                 if (convergenceValue != brot.getConvergenceSteps()) {
                     //Set colorScheme
-                    Color color = getColorScheme(c1, c2);
+                    Color color = getDistortedColorScheme(c1, c2);
                     colors.add(color);
                     ctx.setFill(color);
                 } else {
@@ -180,16 +171,32 @@ public class ControllerVisualizer implements Initializable {
         return convergenceSteps;
     }
 
-    //Checks which color scheme should be activated
-    private Color getColorScheme(double c1, double c2) {
+    //getColoScheme + distortion
+    private Color getDistortedColorScheme(double c1, double c2) {
         Mandelbrot.ColorScheme colorScheme = brot.getColorScheme();
         //TODO fix RGB distortion
-        int factorR = 1;
-        int factorG = 1;
-        int factorB = 1;
-        factorR = Integer.parseInt(customR.getText());
-        factorG = Integer.parseInt(customG.getText());
-        factorB = Integer.parseInt(customB.getText());
+        double factorR = 1;
+        double factorG = 1;
+        double factorB = 1;
+
+        if ((customR.getText()).equals("")) {
+        } else {
+            if (Double.parseDouble(customR.getText()) >= 0 && Double.parseDouble(customR.getText()) <= 10) {
+                factorR = Double.parseDouble(customR.getText());
+            }
+        }
+        if ((customG.getText()).equals("")) {
+        } else {
+            if (Double.parseDouble(customG.getText()) >= 0 && Double.parseDouble(customG.getText()) <= 10) {
+                factorG = Double.parseDouble(customG.getText());
+            }
+        }
+        if ((customB.getText()).equals("")) {
+        } else {
+            if (Double.parseDouble(customB.getText()) >= 0 && Double.parseDouble(customB.getText()) <= 10) {
+                factorB = Double.parseDouble(customB.getText());
+            }
+        }
         switch (colorScheme) {
             case RED:
                 return Color.color((c1 * factorR) / 255.0, (c2 * factorG) / 255.0, (c2 * factorB) / 255.0);
@@ -204,7 +211,28 @@ public class ControllerVisualizer implements Initializable {
             case CYAN:
                 return Color.color((c2 * factorR) / 255.0, (c1 * factorG) / 255.0, (c1 * factorB) / 255.0);
             default:
-                return Color.color((c2 * factorR) / 255.0, (c1 * factorG) / 255.0, (c2 * factorB) / 255.0);
+                return Color.color(c2 / 255.0, c1 / 255.0, c2 / 255.0);
+        }
+    }
+
+    //Checks which color scheme should be activated
+    private Color getColorScheme(double c1, double c2) {
+        Mandelbrot.ColorScheme colorScheme = brot.getColorScheme();
+        switch (colorScheme) {
+            case RED:
+                return Color.color(c1 / 255.0, c2 / 255.0, c2 / 255.0);
+            case YELLOW:
+                return Color.color(c1 / 255.0, c1 / 255.0, c2 / 255.0);
+            case MAGENTA:
+                return Color.color(c1 / 255.0, c2 / 255.0, c1 / 255.0);
+            case BLUE:
+                return Color.color(c2 / 255.0, c1 / 255.0, c1 / 255.0);
+            case GREEN:
+                return Color.color(c2 / 255.0, c1 / 255.0, c2 / 255.0);
+            case CYAN:
+                return Color.color(c2 / 255.0, c1 / 255.0, c1 / 255.0);
+            default:
+                return Color.color(c2 / 255.0, c1 / 255.0, c2 / 255.0);
         }
     }
 
@@ -220,7 +248,7 @@ public class ControllerVisualizer implements Initializable {
         colorSchemePicker.getItems().addAll(Mandelbrot.ColorScheme.values());
         colorSchemePicker.getSelectionModel().select(brot.getColorScheme());
         colorSchemePicker.getSelectionModel().selectedItemProperty().addListener(((observableValue, oldV, newV) -> brot.setColorScheme((Mandelbrot.ColorScheme) newV)));
-        colorSchemePicker.getSelectionModel().selectedItemProperty().addListener(((observableValue) -> paintSet(gc, brot)));
+        colorSchemePicker.getSelectionModel().selectedItemProperty().addListener(((observableValue, oldV, newV) -> paintSet(gc, brot)));
         paintSet(gc, brot);
         System.out.println("Controller loaded");
     }
