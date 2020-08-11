@@ -10,13 +10,18 @@ import javafx.stage.Stage;
 
 public class Main extends Application {
 
+
+    //Initial boot
     @Override
     public void start(Stage primaryStage) throws Exception {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("visualizer.fxml"));
-        Parent root = loader.load();
-        primaryStage.setScene(new Scene(root));
+        FXMLLoader loader = new FXMLLoader(); //instantiating my loader
+        loader.setLocation(getClass().getResource("visualizer.fxml")); //loading the first scene
+        Parent root = loader.load(); //assigning the first scene from the loader to a variable
+        primaryStage.setScene(new Scene(root)); //assigning the variable to the stage
         primaryStage.setTitle("Visualizing");
         primaryStage.show();
+
+
     }
 
     @Override
