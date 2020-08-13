@@ -1,0 +1,40 @@
+Create Table FractalsDB;
+
+	Create Table User(
+		user_ID int(8),
+		name varchar(24),
+		password varchar(32),
+		email varchar(32),
+		PRIMARY KEY(user_ID)
+		);
+
+	Create Table CustomRGB(
+		customRGB_ID int8,
+		r_factor double(4,3),
+		g_factor double(4,3),
+		b_factor double(4,3),
+		PRIMARY KEY(customRGB_ID)
+		);
+
+	Create Table Fractal(
+		fractal_ID int(8),
+		customRGB_ID int(8),
+		base_color varchar(8), // NEEDS CHECK
+		color_scheme varchar(7),
+		convergence_steps int(4),
+		zoom_value int(5),
+		center_x double(3,2),
+		center_y double(3,2),
+		z double(1,3),
+		zi double(1,3),
+		PRIMARY KEY(fractal_ID),
+		FOREIGN KEY(customRGB_ID) REFERENCES CustomRGB(customRGB_ID)
+		);
+
+	Create Table CustomSet(
+	    user_ID int(8),
+	    fractal_ID int(8),
+	    set_name varchar(24),
+	    PRIMARY KEY (user_ID, fractal_ID)
+	    );
+		

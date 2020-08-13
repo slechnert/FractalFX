@@ -1,19 +1,19 @@
 package slechnert;
 
+
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.ColorPicker;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
+import javafx.scene.image.PixelWriter;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+import javafx.stage.Stage;
 
 import java.net.URL;
-import java.util.HashSet;
 import java.util.ResourceBundle;
-import java.util.Set;
 
 public class ControllerVisualizer implements Initializable {
     final double MANDELBROT_RE_MIN = -2;
@@ -29,6 +29,15 @@ public class ControllerVisualizer implements Initializable {
     GraphicsContext gc;
 
     public ControllerVisualizer() {
+    }
+
+    @FXML
+    public Button close;
+
+    @FXML
+    public void stop() {
+        Stage stage = (Stage) close.getScene().getWindow();
+        stage.close();
     }
 
     @FXML
@@ -60,7 +69,7 @@ public class ControllerVisualizer implements Initializable {
             paintSet(gc, brot);
         } else {
             zTF.clear();
-            zTF.setText("Invalid Value");
+            zTF.setText("NOPE");
         }
     }
 
@@ -72,7 +81,7 @@ public class ControllerVisualizer implements Initializable {
             paintSet(gc, brot);
         } else {
             zTF.clear();
-            ziTF.setText("Invalid Value");
+            ziTF.setText("NOPE");
         }
     }
 
@@ -94,19 +103,23 @@ public class ControllerVisualizer implements Initializable {
         boolean checkBoxSelected = isJulia.isSelected();
         if (checkBoxSelected) {
             gc.clearRect(0, 0, canVis.getWidth(), canVis.getHeight());
-            if (Integer.parseInt(convTF.getText()) >= 1 && Integer.parseInt(convTF.getText()) <= 1000) {
+            if (convTF.getText().equals("")) {
+                brot = new Mandelbrot(1, JULIA_RE_MIN, JULIA_RE_MAX, JULIA_IM_MIN, JULIA_IM_MAX, 0.3, -0.5);
+            } else if (Integer.parseInt(convTF.getText()) >= 1 && Integer.parseInt(convTF.getText()) <= 1000) {
                 brot = new Mandelbrot(Integer.parseInt(convTF.getText()), JULIA_RE_MIN, JULIA_RE_MAX, JULIA_IM_MIN, JULIA_IM_MAX, 0.3, -0.5);
             } else {
-                brot = new Mandelbrot(15, JULIA_RE_MIN, JULIA_RE_MAX, JULIA_IM_MIN, JULIA_IM_MAX, 0.3, -0.5);
+                brot = new Mandelbrot(1, JULIA_RE_MIN, JULIA_RE_MAX, JULIA_IM_MIN, JULIA_IM_MAX, 0.3, -0.5);
             }
             zTF.setDisable(false);
             ziTF.setDisable(false);
         } else {
             gc.clearRect(0, 0, canVis.getWidth(), canVis.getHeight());
-            if (Integer.parseInt(convTF.getText()) >= 1 && Integer.parseInt(convTF.getText()) <= 1000) {
+            if (convTF.getText().equals("")) {
+                brot = new Mandelbrot(1, MANDELBROT_RE_MIN, MANDELBROT_RE_MAX, MANDELBROT_IM_MIN, MANDELBROT_IM_MAX, 0, 0);
+            } else if (Integer.parseInt(convTF.getText()) >= 1 && Integer.parseInt(convTF.getText()) <= 1000) {
                 brot = new Mandelbrot(Integer.parseInt(convTF.getText()), MANDELBROT_RE_MIN, MANDELBROT_RE_MAX, MANDELBROT_IM_MIN, MANDELBROT_IM_MAX, 0, 0);
             } else {
-                brot = new Mandelbrot(15, MANDELBROT_RE_MIN, MANDELBROT_RE_MAX, MANDELBROT_IM_MIN, MANDELBROT_IM_MAX, 0, 0);
+                brot = new Mandelbrot(1, MANDELBROT_RE_MIN, MANDELBROT_RE_MAX, MANDELBROT_IM_MIN, MANDELBROT_IM_MAX, 0, 0);
             }
             zTF.setDisable(true);
             ziTF.setDisable(true);
@@ -125,7 +138,8 @@ public class ControllerVisualizer implements Initializable {
     private void paintSet(GraphicsContext ctx, Mandelbrot brot) {
         double precision = Math.max((brot.getMANDELBROT_RE_MAX() - brot.getMANDELBROT_RE_MIN()) / canVis.getWidth(), (brot.getMANDELBROT_IM_MAX() - brot.getMANDELBROT_IM_MIN()) / canVis.getHeight());
         double convergenceValue;
-        Set<Color> colors = new HashSet<>();
+        PixelWriter p = ctx.getPixelWriter();
+
         for (double c = brot.getMANDELBROT_RE_MIN(), xR = 0; xR < canVis.getWidth(); c += precision, xR++) {
             for (double ci = brot.getMANDELBROT_IM_MIN(), yR = 0; yR < canVis.getHeight(); ci += precision, yR++) {
                 if (brot.isMandelbrot()) {
@@ -136,20 +150,17 @@ public class ControllerVisualizer implements Initializable {
                 double t1 = convergenceValue / brot.getConvergenceSteps(); //(50.0 .. )
                 double c1 = Math.min(255 * 2 * t1, 255);
                 double c2 = Math.max(255 * (2 * t1 - 1), 0);
-
+                Color color = Color.WHITE;
                 if (convergenceValue != brot.getConvergenceSteps()) {
                     //Set colorScheme
-                    Color color = getDistortedColorScheme(c1, c2);
-                    colors.add(color);
-                    ctx.setFill(color);
+                    color = getDistortedColorScheme(c1, c2);
                 } else {
-                    ctx.setFill(brot.getConvergenceColor());
-
+                    color = brot.getConvergenceColor();
                 }
                 if (brot.isMandelbrot()) {
-                    ctx.fillRect(xR + 50, yR, 1, 1);
+                    p.setColor((int) xR + (int) (canVis.getWidth() / 12), (int) yR, color);
                 } else {
-                    ctx.fillRect(xR + 250, yR, 1, 1);
+                    p.setColor((int) xR + (int) (canVis.getWidth() / 5), (int) yR, color);
                 }
             }
         }
@@ -171,10 +182,9 @@ public class ControllerVisualizer implements Initializable {
         return convergenceSteps;
     }
 
-    //getColoScheme + distortion
+    //getColorScheme + distortion
     private Color getDistortedColorScheme(double c1, double c2) {
         Mandelbrot.ColorScheme colorScheme = brot.getColorScheme();
-        //TODO fix RGB distortion
         double factorR = 1;
         double factorG = 1;
         double factorB = 1;
@@ -205,53 +215,45 @@ public class ControllerVisualizer implements Initializable {
             case MAGENTA:
                 return Color.color((c1 * factorR) / 255.0, (c2 * factorG) / 255.0, (c1 * factorB) / 255.0);
             case BLUE:
-                return Color.color((c2 * factorR) / 255.0, (c1 * factorG) / 255.0, (c1 * factorB) / 255.0);
+                return Color.color((c2 * factorR) / 255.0, (c2 * factorG) / 255.0, (c1 * factorB) / 255.0);
             case GREEN:
                 return Color.color((c2 * factorR) / 255.0, (c1 * factorG) / 255.0, (c2 * factorB) / 255.0);
             case CYAN:
                 return Color.color((c2 * factorR) / 255.0, (c1 * factorG) / 255.0, (c1 * factorB) / 255.0);
+            case WHITE:
+                return Color.color((c1 * factorR) / 255.0, (c1 * factorG) / 255.0, (c1 * factorB) / 255.0);
             default:
                 return Color.color(c2 / 255.0, c1 / 255.0, c2 / 255.0);
         }
     }
 
-    //Checks which color scheme should be activated
-    private Color getColorScheme(double c1, double c2) {
-        Mandelbrot.ColorScheme colorScheme = brot.getColorScheme();
-        switch (colorScheme) {
-            case RED:
-                return Color.color(c1 / 255.0, c2 / 255.0, c2 / 255.0);
-            case YELLOW:
-                return Color.color(c1 / 255.0, c1 / 255.0, c2 / 255.0);
-            case MAGENTA:
-                return Color.color(c1 / 255.0, c2 / 255.0, c1 / 255.0);
-            case BLUE:
-                return Color.color(c2 / 255.0, c1 / 255.0, c1 / 255.0);
-            case GREEN:
-                return Color.color(c2 / 255.0, c1 / 255.0, c2 / 255.0);
-            case CYAN:
-                return Color.color(c2 / 255.0, c1 / 255.0, c1 / 255.0);
-            default:
-                return Color.color(c2 / 255.0, c1 / 255.0, c2 / 255.0);
-        }
-    }
 
     @FXML
     public void keepRGBActual() {
         paintSet(gc, brot);
     }
 
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
-        brot = new Mandelbrot(15, JULIA_RE_MIN, JULIA_RE_MAX, JULIA_IM_MIN, JULIA_IM_MAX, 0.3, -0.5);
-        gc = canVis.getGraphicsContext2D();
+    private void initializeColorSchemePicker() {
         colorSchemePicker.getItems().addAll(Mandelbrot.ColorScheme.values());
         colorSchemePicker.getSelectionModel().select(brot.getColorScheme());
         colorSchemePicker.getSelectionModel().selectedItemProperty().addListener(((observableValue, oldV, newV) -> brot.setColorScheme((Mandelbrot.ColorScheme) newV)));
         colorSchemePicker.getSelectionModel().selectedItemProperty().addListener(((observableValue, oldV, newV) -> paintSet(gc, brot)));
-        paintSet(gc, brot);
-        System.out.println("Controller loaded");
     }
+
+    @FXML
+    public BorderPane momma;
+
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        brot = new Mandelbrot(1, JULIA_RE_MIN, JULIA_RE_MAX, JULIA_IM_MIN, JULIA_IM_MAX, 0.3, -0.5);
+        gc = canVis.getGraphicsContext2D();
+        initializeColorSchemePicker();
+        paintSet(gc, brot);
+    }
+
+
 }
+
+
 
 //Model view viewmodel architecture

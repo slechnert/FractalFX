@@ -5,7 +5,7 @@ import javafx.scene.paint.Color;
 public class Mandelbrot {
 
     public enum ColorScheme {
-        GREEN, RED, YELLOW, BLUE, CYAN, MAGENTA
+        GREEN, RED, YELLOW, BLUE, CYAN, MAGENTA, WHITE
     }
 
 
