@@ -27,7 +27,7 @@ public class Main extends Application {
         primaryStage.setScene(new Scene(root)); //assigning the variable to the stage
 
 
-        primaryStage.initStyle(StageStyle.UNDECORATED);
+//        primaryStage.initStyle(StageStyle.UNDECORATED);
         primaryStage.setTitle("Visualizing");
         primaryStage.show();
 

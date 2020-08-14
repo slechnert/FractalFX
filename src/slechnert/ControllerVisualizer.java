@@ -32,6 +32,9 @@ public class ControllerVisualizer implements Initializable {
     }
 
     @FXML
+    public BorderPane momma;
+
+    @FXML
     public Button close;
 
     @FXML
@@ -77,7 +80,7 @@ public class ControllerVisualizer implements Initializable {
     public void setZi() {
         double newZi = Double.parseDouble(ziTF.getText());
         if (newZi <= 1 && newZi >= -1) {
-            brot.setZ(newZi);
+            brot.setZi(newZi);
             paintSet(gc, brot);
         } else {
             zTF.clear();
@@ -95,6 +98,7 @@ public class ControllerVisualizer implements Initializable {
         paintSet(gc, brot);
     }
 
+    //swap & redraw
     @FXML
     public CheckBox isJulia;
 
@@ -125,16 +129,11 @@ public class ControllerVisualizer implements Initializable {
             ziTF.setDisable(true);
         }
         brot.setConvergenceColor(colorPicker.getValue());
+        updateStats();
         paintSet(gc, brot);
     }
 
-    @FXML
-    public TextField customR;
-    @FXML
-    public TextField customG;
-    @FXML
-    public TextField customB;
-
+    //pixelwriter draw
     private void paintSet(GraphicsContext ctx, Mandelbrot brot) {
         double precision = Math.max((brot.getMANDELBROT_RE_MAX() - brot.getMANDELBROT_RE_MIN()) / canVis.getWidth(), (brot.getMANDELBROT_IM_MAX() - brot.getMANDELBROT_IM_MIN()) / canVis.getHeight());
         double convergenceValue;
@@ -164,6 +163,7 @@ public class ControllerVisualizer implements Initializable {
                 }
             }
         }
+        updateStats();
         System.out.println("Fractal was drawn!");
     }
 
@@ -183,6 +183,13 @@ public class ControllerVisualizer implements Initializable {
     }
 
     //getColorScheme + distortion
+    @FXML
+    public TextField customR;
+    @FXML
+    public TextField customG;
+    @FXML
+    public TextField customB;
+
     private Color getDistortedColorScheme(double c1, double c2) {
         Mandelbrot.ColorScheme colorScheme = brot.getColorScheme();
         double factorR = 1;
@@ -227,11 +234,29 @@ public class ControllerVisualizer implements Initializable {
         }
     }
 
-
     @FXML
     public void keepRGBActual() {
         paintSet(gc, brot);
     }
+
+    //Number range display
+    @FXML
+    private Label reMinStat;
+    @FXML
+    private Label reMaxStat;
+    @FXML
+    private Label imMinStat;
+    @FXML
+    private Label imMaxStat;
+
+    @FXML
+    private void updateStats() {
+        reMinStat.setText(String.valueOf(brot.getMANDELBROT_RE_MIN()));
+        reMaxStat.setText(String.valueOf(brot.getMANDELBROT_RE_MAX()));
+        imMinStat.setText(String.valueOf(brot.getMANDELBROT_IM_MIN()));
+        imMaxStat.setText(String.valueOf(brot.getMANDELBROT_IM_MAX()));
+    }
+
 
     private void initializeColorSchemePicker() {
         colorSchemePicker.getItems().addAll(Mandelbrot.ColorScheme.values());
@@ -240,20 +265,35 @@ public class ControllerVisualizer implements Initializable {
         colorSchemePicker.getSelectionModel().selectedItemProperty().addListener(((observableValue, oldV, newV) -> paintSet(gc, brot)));
     }
 
-    @FXML
-    public BorderPane momma;
-
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        brot = new Mandelbrot(1, JULIA_RE_MIN, JULIA_RE_MAX, JULIA_IM_MIN, JULIA_IM_MAX, 0.3, -0.5);
+//        brot = new Mandelbrot(1, JULIA_RE_MIN, JULIA_RE_MAX, JULIA_IM_MIN, JULIA_IM_MAX, 0.3, -0.5);
+        brot = new Mandelbrot(50, MANDELBROT_RE_MIN * 2, MANDELBROT_RE_MAX, MANDELBROT_IM_MIN, MANDELBROT_IM_MAX, 0, 0);
+//        brot = new Mandelbrot(50, -3, -2, MANDELBROT_IM_MIN, MANDELBROT_IM_MAX, 0, 0);
+        updateStats();
         gc = canVis.getGraphicsContext2D();
         initializeColorSchemePicker();
         paintSet(gc, brot);
     }
+//    private double MANDELBROT_RE_MIN = -2;
+//    private double MANDELBROT_RE_MAX = 1;
+//    private double MANDELBROT_IM_MIN = -1;
+//    private double MANDELBROT_IM_MAX = 1;
 
+    //TODO number range + zoom
+//    public double getRatio() {
+    // width/height = whRatio
+
+    //eval mousepointer position
+    //calcMinX = (width - posX) || posX
+    //calcMinY = (heigt - posY) || posY
+    //calcMin = MinX < MinY || MinY < MinX
+    //calc new frame =
+    //  if(Min = MinX){MinX * whRatio = newY, minX = newX}
+    //  else if(Min = MinY) {MinY / whRatio = new newX, minY = newY}
+//    }
 
 }
-
 
 
 //Model view viewmodel architecture

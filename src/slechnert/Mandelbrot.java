@@ -39,7 +39,7 @@ public class Mandelbrot {
         this.zi = zi;
         this.convergenceSteps = convergenceSteps;
         this.convergenceColor = Color.WHITE;
-        this.colorScheme = ColorScheme.GREEN;
+        this.colorScheme = ColorScheme.WHITE;
     }
 
     public int getConvergenceSteps() {
