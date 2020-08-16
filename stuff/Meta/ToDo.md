@@ -23,7 +23,6 @@
 BASE DONE;
 INITIATE PRESENTATION DEVELOPMENT;
 
-
 ***EXTRAS:***
 * try z / zi - Sliders
 * JPG Export

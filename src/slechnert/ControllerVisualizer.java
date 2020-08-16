@@ -93,7 +93,11 @@ public class ControllerVisualizer implements Initializable {
 
     @FXML
     public void convRedraw() {
-        int newConv = Integer.parseInt(convTF.getText());
+        int newConv = 50;
+        if (convTF.getText().equals("")) {
+        } else {
+            newConv = Integer.parseInt(convTF.getText());
+        }
         brot.setConvergenceSteps(newConv);
         paintSet(gc, brot);
     }
@@ -227,6 +231,8 @@ public class ControllerVisualizer implements Initializable {
                 return Color.color((c2 * factorR) / 255.0, (c1 * factorG) / 255.0, (c2 * factorB) / 255.0);
             case CYAN:
                 return Color.color((c2 * factorR) / 255.0, (c1 * factorG) / 255.0, (c1 * factorB) / 255.0);
+            case BLACK:
+                return Color.color((c2 * factorR) / 255.0, (c2 * factorG) / 255.0, (c2 * factorB) / 255.0);
             case WHITE:
                 return Color.color((c1 * factorR) / 255.0, (c1 * factorG) / 255.0, (c1 * factorB) / 255.0);
             default:
@@ -268,8 +274,8 @@ public class ControllerVisualizer implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 //        brot = new Mandelbrot(1, JULIA_RE_MIN, JULIA_RE_MAX, JULIA_IM_MIN, JULIA_IM_MAX, 0.3, -0.5);
-        brot = new Mandelbrot(50, MANDELBROT_RE_MIN * 2, MANDELBROT_RE_MAX, MANDELBROT_IM_MIN, MANDELBROT_IM_MAX, 0, 0);
-//        brot = new Mandelbrot(50, -3, -2, MANDELBROT_IM_MIN, MANDELBROT_IM_MAX, 0, 0);
+        brot = new Mandelbrot(50, MANDELBROT_RE_MIN, MANDELBROT_RE_MAX, MANDELBROT_IM_MIN, MANDELBROT_IM_MAX, 0, 0);
+//        brot = new Mandelbrot(50, -2, 1, -.5, .5, 0, 0);
         updateStats();
         gc = canVis.getGraphicsContext2D();
         initializeColorSchemePicker();
@@ -280,6 +286,7 @@ public class ControllerVisualizer implements Initializable {
 //    private double MANDELBROT_IM_MIN = -1;
 //    private double MANDELBROT_IM_MAX = 1;
 
+    //TODO Fix custom color scheme boundaries
     //TODO number range + zoom
 //    public double getRatio() {
     // width/height = whRatio

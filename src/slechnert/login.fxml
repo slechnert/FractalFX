@@ -1,14 +1,216 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.effect.ColorAdjust?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.effect.Glow?>
+<?import javafx.scene.effect.InnerShadow?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="slechnert.LoginController"
-            prefHeight="400.0" prefWidth="600.0">
-
-</AnchorPane>
+<BorderPane prefHeight="661.0" prefWidth="628.0"
+            style="-fx-background-color: #dbdbdb00; -fx-background-radius: 15; -fx-border-color: #000000; -fx-border-width: 1; -fx-border-radius: 15;"
+            stylesheets="@../../stuff/Font.css" xmlns="http://javafx.com/javafx/11.0.1"
+            xmlns:fx="http://javafx.com/fxml/1">
+    <top>
+        <Pane prefHeight="163.0" prefWidth="626.0"
+              style="-fx-background-radius: 11 11 0 0; -fx-background-color: #1c1c1c; -fx-border-width: 0; -fx-border-color: #454545; -fx-border-radius: 15 15 0 0; -fx-border-insets: -3 0 0 0;"
+              BorderPane.alignment="CENTER">
+            <children>
+                <Label alignment="CENTER" contentDisplay="CENTER" layoutX="127.0" layoutY="49.0" prefHeight="49.0"
+                       prefWidth="372.0" stylesheets="@../../stuff/Font.css" text="WELCOME !" textAlignment="CENTER"
+                       textFill="#d9d9d9">
+                    <font>
+                        <Font name="Ubuntu Regular" size="55.0"/>
+                    </font>
+                    <effect>
+                        <Glow level="0.12"/>
+                    </effect>
+                </Label>
+            </children>
+            <effect>
+                <InnerShadow blurType="ONE_PASS_BOX" color="#656060" height="41.58" offsetY="3.0" radius="9.895"
+                             width="0.0"/>
+            </effect>
+            <opaqueInsets>
+                <Insets/>
+            </opaqueInsets>
+        </Pane>
+    </top>
+    <center>
+        <GridPane alignment="CENTER" focusTraversable="true" prefHeight="545.0" prefWidth="626.0"
+                  style="-fx-background-color: #333333; -fx-background-radius: 0 0 15 15; -fx-border-color: #454545; -fx-border-radius: 0 0 15 15; -fx-border-width: 1 1 1 1;"
+                  BorderPane.alignment="CENTER">
+            <columnConstraints>
+                <ColumnConstraints hgrow="NEVER" maxWidth="263.0" minWidth="10.0" prefWidth="94.0"/>
+                <ColumnConstraints halignment="CENTER" maxWidth="536.0" minWidth="10.0" prefWidth="443.0"/>
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="177.0" minWidth="10.0" prefWidth="94.0"/>
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints maxHeight="105.0" minHeight="25.0" prefHeight="78.0" vgrow="NEVER"/>
+                <RowConstraints maxHeight="400.0" minHeight="0.0" prefHeight="162.0" vgrow="SOMETIMES"/>
+                <RowConstraints maxHeight="297.0" minHeight="0.0" prefHeight="44.0" vgrow="SOMETIMES"/>
+                <RowConstraints maxHeight="352.0" minHeight="0.0" prefHeight="88.0" vgrow="SOMETIMES"/>
+                <RowConstraints maxHeight="261.0" minHeight="25.0" prefHeight="125.0" vgrow="SOMETIMES"/>
+            </rowConstraints>
+            <BorderPane.margin>
+                <Insets bottom="0.25"/>
+            </BorderPane.margin>
+            <opaqueInsets>
+                <Insets/>
+            </opaqueInsets>
+            <effect>
+                <InnerShadow color="#454545"/>
+            </effect>
+            <children>
+                <GridPane prefHeight="194.0" prefWidth="446.0"
+                          style="-fx-background-color: #1c1c1c; -fx-background-radius: 15;" GridPane.columnIndex="1"
+                          GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+                    <columnConstraints>
+                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="223.0" minWidth="10.0"
+                                           prefWidth="108.0"/>
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="370.0" minWidth="10.0" prefWidth="349.0"/>
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                    </rowConstraints>
+                    <children>
+                        <GridPane style="-fx-border-width: 1 0 0 0; -fx-border-color: #333333;" GridPane.columnSpan="2"
+                                  GridPane.rowIndex="1">
+                            <columnConstraints>
+                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="222.0" minWidth="10.0"
+                                                   prefWidth="108.0"/>
+                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="364.0" minWidth="10.0"
+                                                   prefWidth="350.0"/>
+                            </columnConstraints>
+                            <rowConstraints>
+                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                            </rowConstraints>
+                            <children>
+                                <ImageView GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                                    <image>
+                                        <Image url="@../../stuff/img/pass.png"/>
+                                    </image>
+                                    <effect>
+                                        <ColorAdjust brightness="0.2">
+                                            <input>
+                                                <InnerShadow color="#6e6e6e42" height="1.54" offsetY="2.0" radius="0.0"
+                                                             width="0.0"/>
+                                            </input>
+                                        </ColorAdjust>
+                                    </effect>
+                                </ImageView>
+                                <TextField opacity="0.6" prefHeight="50.0" prefWidth="300.0" promptText="password"
+                                           style="-fx-background-color: #1c1c1c;" GridPane.columnIndex="1">
+                                    <GridPane.margin>
+                                        <Insets right="25.0"/>
+                                    </GridPane.margin>
+                                    <font>
+                                        <Font name="Ubuntu Regular" size="21.0"/>
+                                    </font>
+                                </TextField>
+                            </children>
+                        </GridPane>
+                        <GridPane style="-fx-border-color: #000000; -fx-border-width: 0 0 1 0;" GridPane.columnSpan="2">
+                            <columnConstraints>
+                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="219.0" minWidth="10.0"
+                                                   prefWidth="108.0"/>
+                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="349.0" minWidth="10.0"
+                                                   prefWidth="348.0"/>
+                            </columnConstraints>
+                            <rowConstraints>
+                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                            </rowConstraints>
+                            <children>
+                                <ImageView nodeOrientation="INHERIT" GridPane.halignment="CENTER"
+                                           GridPane.valignment="CENTER">
+                                    <image>
+                                        <Image url="@../../stuff/img/user.png"/>
+                                    </image>
+                                    <effect>
+                                        <ColorAdjust brightness="0.2">
+                                            <input>
+                                                <InnerShadow color="#6e6e6e42" height="3.53" offsetY="2.0"
+                                                             radius="0.38249999999999995" width="0.0"/>
+                                            </input>
+                                        </ColorAdjust>
+                                    </effect>
+                                </ImageView>
+                                <TextField opacity="0.6" prefHeight="50.0" prefWidth="249.0" promptText="username"
+                                           style="-fx-background-color: #1c1c1c;" GridPane.columnIndex="1"
+                                           GridPane.halignment="LEFT">
+                                    <GridPane.margin>
+                                        <Insets right="25.0"/>
+                                    </GridPane.margin>
+                                    <font>
+                                        <Font name="Ubuntu Regular" size="21.0"/>
+                                    </font>
+                                </TextField>
+                            </children>
+                        </GridPane>
+                    </children>
+                    <effect>
+                        <InnerShadow height="12.1" radius="6.775" width="17.0">
+                            <input>
+                                <DropShadow blurType="ONE_PASS_BOX" color="#8d8d8d" height="1.0" offsetY="1.0"
+                                            radius="0.0" width="0.0"/>
+                            </input>
+                        </InnerShadow>
+                    </effect>
+                </GridPane>
+                <Button mnemonicParsing="false" prefHeight="103.0" prefWidth="566.0"
+                        style="-fx-background-color: #6da893; -fx-background-radius: 15; -fx-border-color: #333333; -fx-border-radius: 15; -fx-border-width: 1; -fx-border-insets: -1 0 -1 0;"
+                        text="Let's Go!" textFill="#e4e4e4" GridPane.columnIndex="1" GridPane.rowIndex="3"
+                        GridPane.valignment="TOP">
+                    <GridPane.margin>
+                        <Insets bottom="5.0"/>
+                    </GridPane.margin>
+                    <font>
+                        <Font name="Ubuntu Bold" size="32.0"/>
+                    </font>
+                    <effect>
+                        <InnerShadow choke="0.58" color="#618073de" height="23.0" offsetX="0.5" offsetY="-1.5"
+                                     radius="11.0" width="23.0"/>
+                    </effect>
+                </Button>
+                <Button alignment="CENTER" mnemonicParsing="false" style="-fx-background-color: #333333 #333333;"
+                        text="forgot your details?" textFill="#974d4d" GridPane.columnIndex="1"
+                        GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
+                    <font>
+                        <Font name="Ubuntu Light" size="15.0"/>
+                    </font>
+                </Button>
+                <Button mnemonicParsing="false" prefHeight="64.0" prefWidth="250.0"
+                        style="-fx-background-radius: 15; -fx-background-color: #3a6e91; -fx-border-radius: 15; -fx-border-color: #71808a;"
+                        text="I`m new!" textFill="#ffffffa1" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                    <font>
+                        <Font name="Ubuntu Regular" size="20.0"/>
+                    </font>
+                    <effect>
+                        <DropShadow color="#666666c9">
+                            <input>
+                                <InnerShadow color="#000000af" height="6.17" radius="2.585" width="6.17"/>
+                            </input>
+                        </DropShadow>
+                    </effect>
+                    <GridPane.margin>
+                        <Insets/>
+                    </GridPane.margin>
+                </Button>
+            </children>
+        </GridPane>
+    </center>
+    <opaqueInsets>
+        <Insets/>
+    </opaqueInsets>
+</BorderPane>
