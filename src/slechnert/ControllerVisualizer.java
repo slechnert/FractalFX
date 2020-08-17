@@ -17,8 +17,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
-import java.awt.*;
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.ResourceBundle;
 
 public class ControllerVisualizer implements Initializable {
@@ -34,7 +34,12 @@ public class ControllerVisualizer implements Initializable {
     public Mandelbrot brot;
     GraphicsContext gc;
 
-    public ControllerVisualizer() {
+    private final User currentUser;
+    private final DAO dao;
+
+    public ControllerVisualizer(User currentUser) {
+        this.currentUser = currentUser;
+        this.dao = new DAO();
     }
 
     @FXML
@@ -146,7 +151,7 @@ public class ControllerVisualizer implements Initializable {
 
     //pixelwriter draw
     private void paintSet(GraphicsContext ctx, Mandelbrot brot) {
-        double precision = Math.max((brot.getMANDELBROT_RE_MAX() - brot.getMANDELBROT_RE_MIN()) / canVis.getWidth(), (brot.getMANDELBROT_IM_MAX() - brot.getMANDELBROT_IM_MIN()) / canVis.getHeight());
+        double precision = Math.max((MANDELBROT_RE_MAX - MANDELBROT_RE_MIN) / canVis.getWidth(), (MANDELBROT_IM_MAX - MANDELBROT_IM_MIN) / canVis.getHeight());
         double convergenceValue;
         PixelWriter p = ctx.getPixelWriter();
 
@@ -279,15 +284,17 @@ public class ControllerVisualizer implements Initializable {
     }
 
     //TODO for zoom get x/y and c/ci at that point to calc new RE / IM
+    //TODO understand how old c/ci correlate with new drawing
 
     //ZoomDraw
-    private void paintZoom(GraphicsContext ctx, Mandelbrot oldBrot, Mandelbrot brot) {
-        double precision = Math.max((brot.getMANDELBROT_RE_MAX() - brot.getMANDELBROT_RE_MIN()) / canVis.getWidth(), (brot.getMANDELBROT_IM_MAX() - brot.getMANDELBROT_IM_MIN()) / canVis.getHeight());
+    private void paintZoom(GraphicsContext ctx, Mandelbrot brot, double reRange, double imRange, double c, double ci) {
+        double precision = Math.max(reRange, imRange);
         double convergenceValue;
         PixelWriter p = ctx.getPixelWriter();
 
-        for (double c = oldBrot.getMANDELBROT_RE_MIN(), xR = 0; xR < canVis.getWidth(); c += precision, xR++) {
-            for (double ci = oldBrot.getMANDELBROT_IM_MIN(), yR = 0; yR < canVis.getHeight(); ci += precision, yR++) {
+
+        for (double xR = 0; xR < canVis.getWidth(); c += precision, xR++) {
+            for (double yR = 0; yR < canVis.getHeight(); ci += precision, yR++) {
                 if (brot.isMandelbrot()) {
                     convergenceValue = checkConvergence(ci, c, 0, 0, brot.getConvergenceSteps());
                 } else { //is Julia
@@ -329,7 +336,7 @@ public class ControllerVisualizer implements Initializable {
     }
 
 
-    public Mandelbrot getNewBrot() {
+    public void drawZoomBrot() {
         double oldReMin = brot.getMANDELBROT_RE_MIN();
         double oldReMax = brot.getMANDELBROT_RE_MAX();
         double oldImMin = brot.getMANDELBROT_IM_MIN();
@@ -358,12 +365,28 @@ public class ControllerVisualizer implements Initializable {
         double reStart = zoomTangle.getLayoutX() * rePerPixel;
         double imStart = zoomTangle.getLayoutY() * imPerPixel;
 
-        return new Mandelbrot(brot.getConvergenceSteps(), reStart, zoomTangle.getWidth() * rePerPixel, imStart, zoomTangle.getHeight() * imPerPixel, brot.getZ(), brot.getZi());
+        //get old c & ci
+        double precision = Math.max(oldReRange, oldImRange);
+        double cCarry = 0;
+        double ciCarry = 0;
+        for (double oldC = brot.getMANDELBROT_RE_MIN(), xR = 0; xR < canVis.getWidth(); oldC += precision, xR++) {
+            for (double oldCi = brot.getMANDELBROT_IM_MIN(), yR = 0; yR < canVis.getHeight(); oldCi += precision, yR++) {
+                if (brot.isMandelbrot()) {
+                    if (yR - 1 < imStart && yR + 1 > imStart) {
+                        ciCarry = oldCi;
+                    }
+                    if (xR - 1 < reStart && xR + 1 > reStart) {
+                        cCarry = oldC;
+                    }
+                }
+            }
+        }
+        paintZoom(gc, new Mandelbrot(brot.getConvergenceSteps(), reStart, zoomTangle.getWidth() * rePerPixel, imStart, zoomTangle.getHeight() * imPerPixel, brot.getZ(), brot.getZi()), oldReRange, oldImRange, cCarry, ciCarry);
     }
 
     @FXML
     private void zoom() {
-        paintSet(gc, getNewBrot());
+        drawZoomBrot();
     }
 
     @FXML
@@ -377,9 +400,23 @@ public class ControllerVisualizer implements Initializable {
         }
     }
 
+    @FXML
+    Button reset;
+
+    @FXML
+    private void drawStandardBrot() {
+        paintSet(gc, new Mandelbrot(50, -2, 1, -1, 1, 0, 0));
+    }
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-//        clickLogic();
+
+        try {
+            dao.fillUserCustomSets(currentUser);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
         brot = new Mandelbrot(50, MANDELBROT_RE_MIN, MANDELBROT_RE_MAX, MANDELBROT_IM_MIN, MANDELBROT_IM_MAX, 0, 0);
         Mandelbrot initialBrot = brot;
         updateStats();
@@ -387,10 +424,6 @@ public class ControllerVisualizer implements Initializable {
         initializeColorSchemePicker();
         paintSet(gc, brot);
     }
-//    private double MANDELBROT_RE_MIN = -2;
-//    private double MANDELBROT_RE_MAX = 1;
-//    private double MANDELBROT_IM_MIN = -1;
-//    private double MANDELBROT_IM_MAX = 1;
 
     //TODO Fix custom color scheme boundaries
     //TODO number range + zoom

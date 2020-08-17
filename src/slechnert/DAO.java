@@ -6,8 +6,21 @@ import java.util.List;
 
 public class DAO {
 
+    public DAO() {
+
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+        } catch (ClassNotFoundException e) {
+            System.out.println("Driver couldn't be loaded");
+            e.printStackTrace();
+        }
+        System.out.println("Driver was loaded");
+
+
+    }
+
     private Connection openConnection() throws SQLException {
-        String database = "school";
+        String database = "fractalFX";
         String username = "root";
         String password = "";
         String connectionURL = "jdbc:mysql://localhost:3306/"
@@ -16,18 +29,43 @@ public class DAO {
         return DriverManager.getConnection(connectionURL);
     }
 
-    public boolean createUser(User user) {
+    private boolean closeConnection(Connection connection) {
+        try {
+            connection.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+        System.out.println("Connection closed");
+        return true;
+    }
 
+    public boolean createUser(User user) {
         try {
             Connection connection = openConnection();
             PreparedStatement insertStatement = connection.prepareStatement(
-                    "INSERT INTO USER (user_ID, name, password, email) " +
-                            " VALUES (?, ?, ?, ?)");
-            insertStatement.setString(2, user.getName());
-            insertStatement.setString(3, user.getPassword());
-            insertStatement.setString(4, user.getEmail());
+                    "INSERT INTO USER (name, password, email) " +
+                            " VALUES (?, ?, ?)");
+            insertStatement.setString(1, user.getName());
+            insertStatement.setString(2, user.getPassword());
+            insertStatement.setString(3, user.getEmail());
 
             insertStatement.execute();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean deleteUser(String user_name) {
+        try {
+            Connection connection = openConnection();
+            PreparedStatement deleteStatement = connection.prepareStatement(
+                    "DELETE FROM User WHERE user_name = ?");
+            deleteStatement.setString(1, user_name);
+
+            deleteStatement.execute();
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -64,12 +102,12 @@ public class DAO {
     }
 
 
-    public User getUser(int employeeNumber) {
+    public User getUser(String name) {
 
         try {
             Connection connection = openConnection();
-            PreparedStatement selectOne = connection.prepareStatement("SELECT * FROM User WHERE name = ?");
-            selectOne.setInt(1, employeeNumber);
+            PreparedStatement selectOne = connection.prepareStatement("SELECT * FROM User WHERE user_name = ?");
+            selectOne.setString(1, name);
 
             ResultSet resultSet = selectOne.executeQuery();
             if (resultSet.next()) {
@@ -83,7 +121,7 @@ public class DAO {
         return null;
     }
 
-    public void fillUserCustoms(User user) throws SQLException {
+    public void fillUserCustomSets(User user) throws SQLException {
         Connection connection = openConnection();
         PreparedStatement getCustomSets = connection.prepareStatement("SELECT * FROM CustomSet WHERE user_name = ?");
         getCustomSets.setString(1, user.getName());

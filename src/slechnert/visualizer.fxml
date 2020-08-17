@@ -327,6 +327,8 @@
                                 <ColorAdjust brightness="-0.33" hue="-1.0"/>
                             </effect>
                         </Separator>
+                        <Button fx:id="reset" mnemonicParsing="false" onAction="#drawStandardBrot" text="reset"
+                                GridPane.columnIndex="4" GridPane.rowIndex="4"/>
                     </children>
             </GridPane>
          </children>

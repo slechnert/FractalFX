@@ -1,39 +1,42 @@
-Create Table FractalsDB;
+Create Table IF NOT EXISTS User
+(
+    user_name varchar(24),
+    password  varchar(32),
+    email     varchar(32),
+    PRIMARY KEY (user_name)
+);
 
-	Create Table User(
-		user_name varchar(24),
-		password varchar(32),
-		email varchar(32),
-		PRIMARY KEY(user_name)
-		);
+Create Table IF NOT EXISTS CustomRGB
+(
+    customRGB_ID int(8),
+    r_factor double(4,3),
+    g_factor double(4,3),
+    b_factor double(4,3),
+    PRIMARY KEY (customRGB_ID)
+);
 
-	Create Table CustomRGB(
-		customRGB_ID int8,
-		r_factor double(4,3),
-		g_factor double(4,3),
-		b_factor double(4,3),
-		PRIMARY KEY(customRGB_ID)
-		);
+Create Table IF NOT EXISTS Fractal
+(
+    fractal_ID   int(8),
+    customRGB_ID int(8),
+    base_color   varchar(17),
+    color_scheme varchar(7),
+    convergence_steps int(4),
+    re_min double(11,10),
+    re_max double(11,10),
+    im_min double(11,10),
+    im_max double(11,10),
+    z double(5, 3),
+    zi double(5, 3),
+    PRIMARY KEY (fractal_ID),
+    FOREIGN KEY (customRGB_ID) REFERENCES CustomRGB (customRGB_ID)
+    );
 
-	Create Table Fractal(
-		fractal_ID int(8),
-		customRGB_ID int(8),
-		base_color varchar(8), // NEEDS CHECK
-		color_scheme varchar(7),
-		convergence_steps int(4),
-		zoom_value int(5),
-		center_x double(3,2),
-		center_y double(3,2),
-		z double(1,3),
-		zi double(1,3),
-		PRIMARY KEY(fractal_ID),
-		FOREIGN KEY(customRGB_ID) REFERENCES CustomRGB(customRGB_ID)
-		);
-
-	Create Table CustomSet(
-	    user_name varchar(24),
-	    fractal_ID int(8),
-	    set_name varchar(24),
-	    PRIMARY KEY (user_name, fractal_ID)
-	    );
-		
+Create Table IF NOT EXISTS CustomSet
+(
+    user_name  varchar(24),
+    fractal_ID int(8),
+    set_name   varchar(24),
+    PRIMARY KEY (user_name, fractal_ID),
+    FOREIGN KEY (fractal_ID) REFERENCES  Fractal (fractal_ID)
+);

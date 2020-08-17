@@ -10,12 +10,11 @@
     
 * Login GUI
     * decide if multiple scenes or not
-    * create behautifuhul scene for login
     * create beautifullufully register form
     
 * Login DB
-    * create DB
     * deploy JDBC
+    * define buttons & methods
     * implement logic for constraints & IDs
     
 * manage scene-swap
