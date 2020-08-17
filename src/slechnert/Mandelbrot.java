@@ -9,21 +9,28 @@ public class Mandelbrot {
     }
 
 
-    private double MANDELBROT_RE_MIN = -2;
-    private double MANDELBROT_RE_MAX = 1;
-    private double MANDELBROT_IM_MIN = -1;
-    private double MANDELBROT_IM_MAX = 1;
+    public double MANDELBROT_RE_MIN = -2;
+    public double MANDELBROT_RE_MAX = 1;
+    public double MANDELBROT_IM_MIN = -1;
+    public double MANDELBROT_IM_MAX = 1;
 
-    private double JULIA_RE_MIN = -1.5;
-    private double JULIA_RE_MAX = 1.5;
-    private double JULIA_IM_MIN = -1.5;
-    private double JULIA_IM_MAX = 1.5;
+    public double JULIA_RE_MIN = -1.5;
+    public double JULIA_RE_MAX = 1.5;
+    public double JULIA_IM_MIN = -1.5;
+    public double JULIA_IM_MAX = 1.5;
     // z + zi for Julia set
     private double z;
     private double zi;
     private int convergenceSteps;
     private Color convergenceColor;
     private ColorScheme colorScheme;
+
+    public int fractal_ID;
+    public int customRGB_ID;
+    public double r_factor;
+    public double g_factor;
+    public double b_factor;
+
 
     public boolean isMandelbrot() {
         // if z is 0 then it is a Mandelbrot set

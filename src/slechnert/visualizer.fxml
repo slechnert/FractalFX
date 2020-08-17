@@ -22,6 +22,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.paint.LinearGradient?>
 <?import javafx.scene.paint.Stop?>
+<?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
 <BorderPane fx:id="momma" minHeight="600.0" minWidth="800.0" prefHeight="1080.0" prefWidth="1920.0"
@@ -29,11 +30,11 @@
             xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="slechnert.ControllerVisualizer">
     <bottom>
-        <HBox alignment="CENTER" prefHeight="129.0" prefWidth="1496.0"
+        <HBox alignment="CENTER" prefHeight="129.0" prefWidth="1910.0"
               style="-fx-border-color: #676a73; -fx-border-width: 0 0 0 0; -fx-border-radius: 0 0 0 0;"
               BorderPane.alignment="CENTER">
             <children>
-                <GridPane alignment="CENTER" prefHeight="82.0" prefWidth="1326.0" scaleShape="false"
+                <GridPane alignment="CENTER" prefHeight="412.0" prefWidth="1910.0" scaleShape="false"
                           HBox.hgrow="ALWAYS">
                     <columnConstraints>
                         <ColumnConstraints halignment="RIGHT" maxWidth="164.0" minWidth="10.0" prefWidth="140.0"/>
@@ -51,7 +52,7 @@
                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="332.0" minWidth="10.0" prefWidth="329.0"/>
                     </columnConstraints>
                     <rowConstraints>
-                        <RowConstraints/>
+                        <RowConstraints maxHeight="0.0" minHeight="0.0" prefHeight="0.0"/>
                         <RowConstraints maxHeight="16.0" minHeight="0.0" prefHeight="16.0"/>
                         <RowConstraints maxHeight="42.0" minHeight="0.0" prefHeight="0.0" vgrow="SOMETIMES"/>
                         <RowConstraints maxHeight="42.0" minHeight="0.0" prefHeight="0.0" vgrow="SOMETIMES"/>
@@ -203,8 +204,7 @@
                                 <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="101.0" minWidth="0.0"
                                                    prefWidth="83.0"/>
                                 <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="144.0"
-                                                   minWidth="10.0"
-                                                   prefWidth="87.0"/>
+                                                   minWidth="10.0" prefWidth="87.0"/>
                                 <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" maxWidth="92.0" minWidth="58.0"
                                                    prefWidth="86.0"/>
                             </columnConstraints>
@@ -236,20 +236,19 @@
                                 </Label>
                                 <TextField fx:id="customR" alignment="CENTER" maxWidth="75.0" minWidth="80.0"
                                            onAction="#keepRGBActual" prefHeight="25.0" prefWidth="80.0"
-                                           promptText="R-Factor"
-                                           GridPane.hgrow="NEVER" GridPane.rowIndex="1"/>
+                                           promptText="R-Factor" GridPane.hgrow="NEVER" GridPane.rowIndex="1"/>
                                 <TextField fx:id="customG" alignment="CENTER" maxWidth="75.0" minWidth="80.0"
                                            onAction="#keepRGBActual" prefHeight="25.0" prefWidth="80.0"
-                                           promptText="G-Factor"
-                                           GridPane.columnIndex="1" GridPane.hgrow="NEVER" GridPane.rowIndex="1">
+                                           promptText="G-Factor" GridPane.columnIndex="1" GridPane.hgrow="NEVER"
+                                           GridPane.rowIndex="1">
                                     <GridPane.margin>
                                         <Insets left="5.0" right="5.0"/>
                                     </GridPane.margin>
                                 </TextField>
                                 <TextField fx:id="customB" alignment="CENTER" maxWidth="75.0" minWidth="80.0"
                                            onAction="#keepRGBActual" prefHeight="25.0" prefWidth="80.0"
-                                           promptText="B-Factor"
-                                           GridPane.columnIndex="2" GridPane.hgrow="NEVER" GridPane.rowIndex="1"/>
+                                           promptText="B-Factor" GridPane.columnIndex="2" GridPane.hgrow="NEVER"
+                                           GridPane.rowIndex="1"/>
                             </children>
                   </GridPane>
                         <GridPane prefHeight="82.0" prefWidth="273.0" GridPane.columnIndex="9" GridPane.rowIndex="4">
@@ -257,8 +256,7 @@
                                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="186.0" minWidth="10.0" prefWidth="76.0"/>
                                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="199.0" minWidth="6.0" prefWidth="157.0"/>
                                 <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="166.0"
-                                                   minWidth="10.0"
-                                                   prefWidth="76.0"/>
+                                                   minWidth="10.0" prefWidth="76.0"/>
                             </columnConstraints>
                             <rowConstraints>
                                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
@@ -286,8 +284,7 @@
                                 <TextField fx:id="customSaveTF" prefHeight="25.0" prefWidth="195.0"
                                            promptText="Enter custom-set name.." GridPane.columnIndex="1"/>
                                 <Button fx:id="customSaveBtn" contentDisplay="CENTER" mnemonicParsing="false"
-                                        prefHeight="25.0"
-                                        prefWidth="60.0" text="Save" GridPane.columnIndex="2">
+                                        prefHeight="25.0" prefWidth="60.0" text="Save" GridPane.columnIndex="2">
                                     <cursor>
                                         <Cursor fx:constant="DEFAULT"/>
                                     </cursor>
@@ -312,8 +309,7 @@
                                     </GridPane.margin>
                                 </Button>
                                 <ChoiceBox fx:id="customLoaderCB" prefHeight="25.0" prefWidth="258.0"
-                                           GridPane.columnIndex="1"
-                                           GridPane.rowIndex="1"/>
+                                           GridPane.columnIndex="1" GridPane.rowIndex="1"/>
                             </children>
                             <GridPane.margin>
                                 <Insets/>
@@ -346,18 +342,7 @@
        <Group BorderPane.alignment="TOP_CENTER">
            <children>
                <Canvas fx:id="canVis" height="951.0" layoutX="-7.0" layoutY="-115.0" nodeOrientation="INHERIT"
-                       width="1912.0"/>
-               <Button fx:id="close" alignment="TOP_RIGHT" contentDisplay="CENTER" depthTest="DISABLE"
-                       focusTraversable="false" layoutX="1873.0" layoutY="-115.0" mnemonicParsing="false"
-                       onAction="#stop" opacity="0.73" prefHeight="0.0" prefWidth="0.0"
-                       style="-fx-background-color: transparent;" text="X" textAlignment="JUSTIFY" textFill="#f8f8f8">
-                   <font>
-                       <Font name="System Bold" size="16.0"/>
-                   </font>
-                   <cursor>
-                       <Cursor fx:constant="HAND"/>
-                   </cursor>
-               </Button>
+                       onMouseClicked="#setZoomCenter" width="1912.0"/>
                <GridPane layoutX="-7.0" layoutY="717.0" prefHeight="120.0" prefWidth="113.0">
                    <columnConstraints>
                        <ColumnConstraints halignment="CENTER" hgrow="NEVER" maxWidth="152.0" minWidth="10.0"
@@ -433,8 +418,23 @@
                            </padding>
                        </Label>
                    </children>
-            </GridPane>
-         </children>
+               </GridPane>
+               <Rectangle fx:id="zoomTangle" arcHeight="5.0" arcWidth="5.0" blendMode="SRC_ATOP" disable="true"
+                          fill="#ffffff00" height="237.75" layoutX="1044.0" layoutY="226.0"
+                          onMouseClicked="#hideZoomTangle" pickOnBounds="true" stroke="#e0e0e000"
+                          strokeDashOffset="10.0" strokeType="INSIDE" style="-fx-stroke-dash-array: 10;" width="478.0"/>
+               <Button fx:id="close" alignment="TOP_RIGHT" contentDisplay="CENTER" depthTest="DISABLE"
+                       focusTraversable="false" layoutX="1873.0" layoutY="-115.0" mnemonicParsing="false"
+                       onAction="#stop" opacity="0.73" prefHeight="0.0" prefWidth="0.0"
+                       style="-fx-background-color: transparent;" text="X" textAlignment="JUSTIFY" textFill="#f8f8f8">
+                   <font>
+                       <Font name="System Bold" size="16.0"/>
+                   </font>
+                   <cursor>
+                       <Cursor fx:constant="HAND"/>
+                   </cursor>
+               </Button>
+           </children>
          <BorderPane.margin>
              <Insets/>
          </BorderPane.margin>

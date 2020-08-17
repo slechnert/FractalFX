@@ -6,12 +6,18 @@ import javafx.fxml.Initializable;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.image.PixelWriter;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
+import java.awt.*;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -106,28 +112,29 @@ public class ControllerVisualizer implements Initializable {
     @FXML
     public CheckBox isJulia;
 
+
     @FXML
     private void drawJulia() {
         boolean checkBoxSelected = isJulia.isSelected();
         if (checkBoxSelected) {
             gc.clearRect(0, 0, canVis.getWidth(), canVis.getHeight());
             if (convTF.getText().equals("")) {
-                brot = new Mandelbrot(1, JULIA_RE_MIN, JULIA_RE_MAX, JULIA_IM_MIN, JULIA_IM_MAX, 0.3, -0.5);
+                brot = new Mandelbrot(1, brot.JULIA_RE_MIN, brot.JULIA_RE_MAX, brot.JULIA_IM_MIN, brot.JULIA_IM_MAX, 0.3, -0.5);
             } else if (Integer.parseInt(convTF.getText()) >= 1 && Integer.parseInt(convTF.getText()) <= 1000) {
-                brot = new Mandelbrot(Integer.parseInt(convTF.getText()), JULIA_RE_MIN, JULIA_RE_MAX, JULIA_IM_MIN, JULIA_IM_MAX, 0.3, -0.5);
+                brot = new Mandelbrot(Integer.parseInt(convTF.getText()), brot.JULIA_RE_MIN, brot.JULIA_RE_MAX, brot.JULIA_IM_MIN, brot.JULIA_IM_MAX, 0.3, -0.5);
             } else {
-                brot = new Mandelbrot(1, JULIA_RE_MIN, JULIA_RE_MAX, JULIA_IM_MIN, JULIA_IM_MAX, 0.3, -0.5);
+                brot = new Mandelbrot(1, brot.JULIA_RE_MIN, brot.JULIA_RE_MAX, brot.JULIA_IM_MIN, brot.JULIA_IM_MAX, 0.3, -0.5);
             }
             zTF.setDisable(false);
             ziTF.setDisable(false);
         } else {
             gc.clearRect(0, 0, canVis.getWidth(), canVis.getHeight());
             if (convTF.getText().equals("")) {
-                brot = new Mandelbrot(1, MANDELBROT_RE_MIN, MANDELBROT_RE_MAX, MANDELBROT_IM_MIN, MANDELBROT_IM_MAX, 0, 0);
+                brot = new Mandelbrot(1, brot.MANDELBROT_RE_MIN, brot.MANDELBROT_RE_MAX, brot.MANDELBROT_IM_MIN, brot.MANDELBROT_IM_MAX, 0, 0);
             } else if (Integer.parseInt(convTF.getText()) >= 1 && Integer.parseInt(convTF.getText()) <= 1000) {
-                brot = new Mandelbrot(Integer.parseInt(convTF.getText()), MANDELBROT_RE_MIN, MANDELBROT_RE_MAX, MANDELBROT_IM_MIN, MANDELBROT_IM_MAX, 0, 0);
+                brot = new Mandelbrot(Integer.parseInt(convTF.getText()), brot.MANDELBROT_RE_MIN, brot.MANDELBROT_RE_MAX, brot.MANDELBROT_IM_MIN, brot.MANDELBROT_IM_MAX, 0, 0);
             } else {
-                brot = new Mandelbrot(1, MANDELBROT_RE_MIN, MANDELBROT_RE_MAX, MANDELBROT_IM_MIN, MANDELBROT_IM_MAX, 0, 0);
+                brot = new Mandelbrot(1, brot.MANDELBROT_RE_MIN, brot.MANDELBROT_RE_MAX, brot.MANDELBROT_IM_MIN, brot.MANDELBROT_IM_MAX, 0, 0);
             }
             zTF.setDisable(true);
             ziTF.setDisable(true);
@@ -271,11 +278,110 @@ public class ControllerVisualizer implements Initializable {
         colorSchemePicker.getSelectionModel().selectedItemProperty().addListener(((observableValue, oldV, newV) -> paintSet(gc, brot)));
     }
 
+    //TODO for zoom get x/y and c/ci at that point to calc new RE / IM
+
+    //ZoomDraw
+    private void paintZoom(GraphicsContext ctx, Mandelbrot oldBrot, Mandelbrot brot) {
+        double precision = Math.max((brot.getMANDELBROT_RE_MAX() - brot.getMANDELBROT_RE_MIN()) / canVis.getWidth(), (brot.getMANDELBROT_IM_MAX() - brot.getMANDELBROT_IM_MIN()) / canVis.getHeight());
+        double convergenceValue;
+        PixelWriter p = ctx.getPixelWriter();
+
+        for (double c = oldBrot.getMANDELBROT_RE_MIN(), xR = 0; xR < canVis.getWidth(); c += precision, xR++) {
+            for (double ci = oldBrot.getMANDELBROT_IM_MIN(), yR = 0; yR < canVis.getHeight(); ci += precision, yR++) {
+                if (brot.isMandelbrot()) {
+                    convergenceValue = checkConvergence(ci, c, 0, 0, brot.getConvergenceSteps());
+                } else { //is Julia
+                    convergenceValue = checkConvergence(brot.getZi(), brot.getZ(), ci, c, brot.getConvergenceSteps());
+                }
+                double t1 = convergenceValue / brot.getConvergenceSteps(); //(50.0 .. )
+                double c1 = Math.min(255 * 2 * t1, 255);
+                double c2 = Math.max(255 * (2 * t1 - 1), 0);
+                Color color;
+                if (convergenceValue != brot.getConvergenceSteps()) {
+                    //Set colorScheme
+                    color = getDistortedColorScheme(c1, c2);
+                } else {
+                    color = brot.getConvergenceColor();
+                }
+                if (brot.isMandelbrot()) {
+                    p.setColor((int) xR, (int) yR, color);
+                } else {
+                    p.setColor((int) xR, (int) yR, color);
+                }
+            }
+        }
+        updateStats();
+        System.out.println("Fractal was drawn!");
+    }
+
+    @FXML
+    private Rectangle zoomTangle;
+
+    private void showZoomTangle() {
+        zoomTangle.setDisable(false);
+        zoomTangle.setStroke(Color.WHITE);
+    }
+
+    @FXML
+    private void hideZoomTangle() {
+        zoomTangle.setDisable(true);
+        zoomTangle.setStroke(new Color(0, 0, 0, 0));
+    }
+
+
+    public Mandelbrot getNewBrot() {
+        double oldReMin = brot.getMANDELBROT_RE_MIN();
+        double oldReMax = brot.getMANDELBROT_RE_MAX();
+        double oldImMin = brot.getMANDELBROT_IM_MIN();
+        double oldImMax = brot.getMANDELBROT_IM_MAX();
+
+        //convert pixel pos to number range
+        double oldReRange;
+        double oldImRange;
+        if (oldReMin < 0 && oldReMax > 0) {
+            oldReRange = (-1 * oldReMin + oldReMax);
+        } else if (oldReMin < 0 && oldReMax < 0) {
+            oldReRange = (oldReMin - oldReMax) * -1;
+        } else {
+            oldReRange = (oldReMax - oldReMax);
+        }
+
+        if (oldImMin < 0 && oldImMax > 0) {
+            oldImRange = (-1 * oldImMin + oldImMax);
+        } else if (oldImMin < 0 && oldImMax < 0) {
+            oldImRange = (oldImMin - oldImMax) * -1;
+        } else {
+            oldImRange = (oldImMax - oldImMax);
+        }
+        double rePerPixel = oldReRange / canVis.getWidth();
+        double imPerPixel = oldImRange / canVis.getHeight();
+        double reStart = zoomTangle.getLayoutX() * rePerPixel;
+        double imStart = zoomTangle.getLayoutY() * imPerPixel;
+
+        return new Mandelbrot(brot.getConvergenceSteps(), reStart, zoomTangle.getWidth() * rePerPixel, imStart, zoomTangle.getHeight() * imPerPixel, brot.getZ(), brot.getZi());
+    }
+
+    @FXML
+    private void zoom() {
+        paintSet(gc, getNewBrot());
+    }
+
+    @FXML
+    private void setZoomCenter(MouseEvent mouseEvent) {
+        if (mouseEvent.getButton() == MouseButton.PRIMARY) {
+            showZoomTangle();
+            zoomTangle.setLayoutX((mouseEvent.getSceneX() + canVis.getLayoutX()) - zoomTangle.getWidth() / 2);
+            zoomTangle.setLayoutY((mouseEvent.getSceneY() + canVis.getLayoutY()) - zoomTangle.getHeight() / 2);
+        } else if (mouseEvent.getButton() == MouseButton.SECONDARY) {
+            zoom();
+        }
+    }
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-//        brot = new Mandelbrot(1, JULIA_RE_MIN, JULIA_RE_MAX, JULIA_IM_MIN, JULIA_IM_MAX, 0.3, -0.5);
+//        clickLogic();
         brot = new Mandelbrot(50, MANDELBROT_RE_MIN, MANDELBROT_RE_MAX, MANDELBROT_IM_MIN, MANDELBROT_IM_MAX, 0, 0);
-//        brot = new Mandelbrot(50, -2, 1, -.5, .5, 0, 0);
+        Mandelbrot initialBrot = brot;
         updateStats();
         gc = canVis.getGraphicsContext2D();
         initializeColorSchemePicker();
@@ -288,17 +394,7 @@ public class ControllerVisualizer implements Initializable {
 
     //TODO Fix custom color scheme boundaries
     //TODO number range + zoom
-//    public double getRatio() {
-    // width/height = whRatio
 
-    //eval mousepointer position
-    //calcMinX = (width - posX) || posX
-    //calcMinY = (heigt - posY) || posY
-    //calcMin = MinX < MinY || MinY < MinX
-    //calc new frame =
-    //  if(Min = MinX){MinX * whRatio = newY, minX = newX}
-    //  else if(Min = MinY) {MinY / whRatio = new newX, minY = newY}
-//    }
 
 }
 

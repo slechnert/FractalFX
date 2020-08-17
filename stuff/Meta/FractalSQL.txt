@@ -1,11 +1,10 @@
 Create Table FractalsDB;
 
 	Create Table User(
-		user_ID int(8),
-		name varchar(24),
+		user_name varchar(24),
 		password varchar(32),
 		email varchar(32),
-		PRIMARY KEY(user_ID)
+		PRIMARY KEY(user_name)
 		);
 
 	Create Table CustomRGB(
@@ -32,9 +31,9 @@ Create Table FractalsDB;
 		);
 
 	Create Table CustomSet(
-	    user_ID int(8),
+	    user_name varchar(24),
 	    fractal_ID int(8),
 	    set_name varchar(24),
-	    PRIMARY KEY (user_ID, fractal_ID)
+	    PRIMARY KEY (user_name, fractal_ID)
 	    );
 		
