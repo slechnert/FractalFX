@@ -344,13 +344,13 @@
        <Group BorderPane.alignment="TOP_CENTER">
            <children>
                <Canvas fx:id="canVis" height="951.0" layoutX="-7.0" layoutY="-115.0" nodeOrientation="INHERIT"
-                       onMouseClicked="#setZoomCenter" width="1912.0"/>
-               <GridPane layoutX="-7.0" layoutY="717.0" prefHeight="120.0" prefWidth="113.0">
+                       onMouseClicked="#setZoomCenter" pickOnBounds="true" width="1912.0"/>
+               <GridPane layoutX="-7.0" layoutY="717.0" prefHeight="120.0" prefWidth="169.0">
                    <columnConstraints>
                        <ColumnConstraints halignment="CENTER" hgrow="NEVER" maxWidth="152.0" minWidth="10.0"
-                                          prefWidth="100.0"/>
+                                          prefWidth="66.0"/>
                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="108.0" minWidth="10.0"
-                                          prefWidth="50.0"/>
+                                          prefWidth="63.0"/>
                    </columnConstraints>
                    <rowConstraints>
                        <RowConstraints maxHeight="60.0" minHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES"/>
@@ -410,7 +410,7 @@
                                <Font name="Segoe UI Semibold" size="11.0"/>
                            </font>
                        </Label>
-                       <Label prefHeight="44.0" prefWidth="96.0" text="RE MIN:" textFill="#787878da"
+                       <Label alignment="CENTER" prefHeight="44.0" prefWidth="96.0" text="RE MIN:" textFill="#787878da"
                               GridPane.halignment="CENTER">
                            <font>
                                <Font name="Segoe UI Semibold" size="11.0"/>
@@ -421,10 +421,6 @@
                        </Label>
                    </children>
                </GridPane>
-               <Rectangle fx:id="zoomTangle" arcHeight="5.0" arcWidth="5.0" blendMode="SRC_ATOP" disable="true"
-                          fill="#ffffff00" height="237.75" layoutX="1044.0" layoutY="226.0"
-                          onMouseClicked="#hideZoomTangle" pickOnBounds="true" stroke="#e0e0e000"
-                          strokeDashOffset="10.0" strokeType="INSIDE" style="-fx-stroke-dash-array: 10;" width="478.0"/>
                <Button fx:id="close" alignment="TOP_RIGHT" contentDisplay="CENTER" depthTest="DISABLE"
                        focusTraversable="false" layoutX="1873.0" layoutY="-115.0" mnemonicParsing="false"
                        onAction="#stop" opacity="0.73" prefHeight="0.0" prefWidth="0.0"
@@ -436,6 +432,11 @@
                        <Cursor fx:constant="HAND"/>
                    </cursor>
                </Button>
+               <Rectangle fx:id="zoomTangle" arcHeight="5.0" arcWidth="5.0" blendMode="SRC_ATOP" fill="#ffffff00"
+                          height="237.75" layoutX="771.0" layoutY="242.0" mouseTransparent="true"
+                          onMouseClicked="#hideZoomTangle" pickOnBounds="true" stroke="#e0e0e000"
+                          strokeDashOffset="10.0" strokeType="INSIDE" style="-fx-stroke-dash-array: 10;"
+                          width="356.625"/>
            </children>
          <BorderPane.margin>
              <Insets/>

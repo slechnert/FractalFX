@@ -9,8 +9,8 @@ public class Mandelbrot {
     }
 
 
-    public double MANDELBROT_RE_MIN = -2;
-    public double MANDELBROT_RE_MAX = 1;
+    public double MANDELBROT_RE_MIN = -2.5;
+    public double MANDELBROT_RE_MAX = .5;
     public double MANDELBROT_IM_MIN = -1;
     public double MANDELBROT_IM_MAX = 1;
 
@@ -24,6 +24,7 @@ public class Mandelbrot {
     private int convergenceSteps;
     private Color convergenceColor;
     private ColorScheme colorScheme;
+    double prePrecision;
 
     public int fractal_ID;
     public int customRGB_ID;

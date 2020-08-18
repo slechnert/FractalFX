@@ -27,4 +27,6 @@ INITIATE PRESENTATION DEVELOPMENT;
 * JPG Export
 * @font-face
     
-  
+ ***FIXES:***
+ * LOGIN TF/PF input too dark
+ * LOGIN/REG IMG/FONT
