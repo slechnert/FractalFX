@@ -1,6 +1,9 @@
 package slechnert;
 
 
+import javafx.beans.Observable;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.canvas.Canvas;
@@ -19,26 +22,116 @@ import javafx.stage.Stage;
 
 import java.net.URL;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 public class ControllerVisualizer implements Initializable {
-    double MANDELBROT_RE_MIN = -2.5;
-    double MANDELBROT_RE_MAX = 0.5;
-    double MANDELBROT_IM_MIN = -1;
-    double MANDELBROT_IM_MAX = 1;
+    public double MANDELBROT_RE_MIN = -2.7;
+    public double MANDELBROT_RE_MAX = 0.5;
+    public double MANDELBROT_IM_MIN = -1.1;
+    public double MANDELBROT_IM_MAX = 1.1;
 
 
-    final private double JULIA_RE_MIN = -.25;
-    final private double JULIA_RE_MAX = 1.5;
-    final private double JULIA_IM_MIN = -3;
-    final private double JULIA_IM_MAX = 3;
+    public double JULIA_RE_MIN = -1.5;
+    public double JULIA_RE_MAX = 1.5;
+    public double JULIA_IM_MIN = -1.5;
+    public double JULIA_IM_MAX = 1.5;
+
+    double factorR;
+    double factorG;
+    double factorB;
     public Mandelbrot brot;
     GraphicsContext gc;
 
-//    private User currentUser;
-//    private final DAO dao = new DAO();
+    private User currentUser;
+    public List<CustomRGB> allCustomRGBS;
+    private final DAO dao;
 
     public ControllerVisualizer() {
+        this.dao = new DAO();
+    }
+
+    public void fillAllRGB() {
+
+    }
+
+    @FXML
+    private ChoiceBox customSetLoader;
+
+    private void initializeCustomSetLoader() {
+//        fillCustomSetStrings();
+        customSetLoader.getItems().addAll(currentUser.customSetList);
+//        customSetLoader.getSelectionModel().select(currentUser.customSetList(0));
+//        customSetLoader.getSelectionModel().selectedItemProperty().addListener(((observableValue, oldV, newV) -> brot.setColorScheme((Mandelbrot.ColorScheme) newV)));
+//        customSetLoader.getSelectionModel().selectedItemProperty().addListener(((observableValue, oldV, newV) -> System.out.println("dafuq")));
+    }
+
+//    public void fillCustomSetStrings(){
+//           for(CustomSet cs : currentUser.customSetList){
+//               customSetStrings.add(cs.getSet_name());
+//           }
+//    }
+
+    @FXML
+    public Button customSaveButton;
+
+    public int getUniquefractalID() {
+        int fractalID = 1;
+        for (int i = 2; i <= 999; i++) {
+            for (Mandelbrot mb : currentUser.customBrote) {
+                if (mb.fractal_ID == i) {
+                    fractalID++;
+                }
+            }
+        }
+        return fractalID;
+    }
+
+    //TODO null felder logik einbauen
+    public boolean isUniqueRGB() {
+        double testR;
+        double testG;
+        double testB;
+        if ((customR.getText()).equals("")) {
+            testR = brot.getR_factor();
+        } else {
+            testR = Double.parseDouble(customR.getText());
+        }
+        for (CustomRGB rgb : allCustomRGBS) {
+            if ((rgb.getR_factor() != testR && rgb.getG_factor() != Double.parseDouble(customG.getText()) && rgb.getB_factor() != Double.parseDouble(customB.getText()))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public int getUniqueCustomRGBID() {
+        int customRGB_ID = 1;
+        for (int i = 2; i <= allCustomRGBS.size(); i++) {
+            for (CustomRGB rgb : allCustomRGBS) {
+                if (customRGB_ID == rgb.customRGB_ID) {
+                    customRGB_ID++;
+                }
+            }
+        }
+        return customRGB_ID;
+    }
+
+    @FXML
+    public void save() throws SQLException {
+        if (!currentUser.customBrote.contains(brot)) {
+            brot.setFractal_ID(getUniquefractalID());
+        } else {
+            return;
+        }
+        if (isUniqueRGB()) {
+            brot.setCustomRGB_ID(getUniqueCustomRGBID());
+        }
+        dao.addCustomRGB(new CustomRGB(brot.customRGB_ID, Double.parseDouble(customR.getText()), Double.parseDouble(customR.getText()), Double.parseDouble(customR.getText())));
+        allCustomRGBS = dao.getAllCustomRGB();
     }
 
     @FXML
@@ -67,6 +160,13 @@ public class ControllerVisualizer implements Initializable {
 
     @FXML
     public ChoiceBox colorSchemePicker;
+
+    private void initializeColorSchemePicker() {
+        colorSchemePicker.getItems().addAll(Mandelbrot.ColorScheme.values());
+        colorSchemePicker.getSelectionModel().select(brot.getColorScheme());
+        colorSchemePicker.getSelectionModel().selectedItemProperty().addListener(((observableValue, oldV, newV) -> brot.setColorScheme((Mandelbrot.ColorScheme) newV)));
+        colorSchemePicker.getSelectionModel().selectedItemProperty().addListener(((observableValue, oldV, newV) -> paintSet(gc, brot)));
+    }
 
     @FXML
     public TextField zTF;
@@ -208,23 +308,23 @@ public class ControllerVisualizer implements Initializable {
 
     private Color getDistortedColorScheme(double c1, double c2) {
         Mandelbrot.ColorScheme colorScheme = brot.getColorScheme();
-        double factorR = 1;
-        double factorG = 1;
-        double factorB = 1;
 
         if ((customR.getText()).equals("")) {
+            factorR = brot.getR_factor();
         } else {
             if (Double.parseDouble(customR.getText()) >= 0 && Double.parseDouble(customR.getText()) <= 10) {
                 factorR = Double.parseDouble(customR.getText());
             }
         }
         if ((customG.getText()).equals("")) {
+            factorG = brot.getG_factor();
         } else {
             if (Double.parseDouble(customG.getText()) >= 0 && Double.parseDouble(customG.getText()) <= 10) {
                 factorG = Double.parseDouble(customG.getText());
             }
         }
         if ((customB.getText()).equals("")) {
+            factorB = brot.getB_factor();
         } else {
             if (Double.parseDouble(customB.getText()) >= 0 && Double.parseDouble(customB.getText()) <= 10) {
                 factorB = Double.parseDouble(customB.getText());
@@ -275,13 +375,6 @@ public class ControllerVisualizer implements Initializable {
         imMaxStat.setText(String.valueOf(brot.getMANDELBROT_IM_MAX()));
     }
 
-
-    private void initializeColorSchemePicker() {
-        colorSchemePicker.getItems().addAll(Mandelbrot.ColorScheme.values());
-        colorSchemePicker.getSelectionModel().select(brot.getColorScheme());
-        colorSchemePicker.getSelectionModel().selectedItemProperty().addListener(((observableValue, oldV, newV) -> brot.setColorScheme((Mandelbrot.ColorScheme) newV)));
-        colorSchemePicker.getSelectionModel().selectedItemProperty().addListener(((observableValue, oldV, newV) -> paintSet(gc, brot)));
-    }
 
     //TODO for zoom get x/y and c/ci at that point to calc new RE / IM
     //TODO understand how old c/ci correlate with new drawing
@@ -347,45 +440,28 @@ public class ControllerVisualizer implements Initializable {
         //convert pixel pos to number range
         double oldReRange;
         double oldImRange;
-        //TODO remin too low, remax to low, shirt towards -x
-        if (oldReMin < 0 && oldReMax >= 0) {
-            oldReRange = (-1 * oldReMin + oldReMax);
-        } else if (oldReMin < 0 && oldReMax <= 0) {
-            oldReRange = (oldReMin - oldReMax) * -1;
-        } else {
-            oldReRange = (oldReMax - oldReMin);
-        }
+        //TODO remin too low, remax to low, shift towards -x
 
-        if (oldImMin <= 0 && oldImMax >= 0) {
-            oldImRange = (oldImMax - oldImMin);
-        } else if (oldImMin < 0 && oldImMax <= 0) {
-            oldImRange = (oldImMin - oldImMax) * -1;
-        } else {
-            oldImRange = (oldImMax - oldImMax);
-        }
-
-
-//        oldReRange = oldReMax - oldReMin;
-//        oldImRange = oldImMax - oldImMin;
-
-        if (oldImRange < 0) {
-            oldImRange = oldImRange * -1;
-        }
-        if (oldReRange < 0) {
-            oldReRange = oldReRange * -1;
-        }
+        oldReRange = oldReMax - oldReMin;
+        oldImRange = oldImMax - oldImMin;
 
         double rePerPixel = oldReRange / canVis.getWidth();
         double imPerPixel = oldImRange / canVis.getHeight();
         double newReMin = ((zoomTangle.getLayoutX() - canVis.getLayoutX()) * rePerPixel) + oldReMin;
         double newImMin = ((zoomTangle.getLayoutY() - canVis.getLayoutY()) * imPerPixel) + oldImMin;
-        double newReMax = newReMin + oldReRange / 4;
-        double newImMax = newImMin + oldImRange / 4;
+//        double newReMin = oldReMin+oldReRange/4;
+//        double newImMin = oldImMin+oldImRange/4;
+//        double newReMax = newReMin + oldReRange / 4;
+//        double newImMax = newImMin + oldImRange / 4;
+        double newReMax = newReMin + zoomTangle.getWidth() * rePerPixel;
+        double newImMax = newImMin + zoomTangle.getHeight() * imPerPixel;
 
 
         brot = new Mandelbrot(oldConvergenceSteps, newReMin, newReMax, newImMin, newImMax, oldZ, oldZi);
-        double precisionX = (oldReRange / 4) / canVis.getWidth();
-        double precisionY = (oldImRange / 4) / canVis.getHeight();
+//        double precisionX = (oldReRange / 4) / canVis.getWidth();
+//        double precisionY = (oldImRange / 4) / canVis.getHeight();
+        double precisionX = (newReMax - newReMin) / canVis.getWidth();
+        double precisionY = (newImMax - newImMin) / canVis.getHeight();
         paintZoom(canVis.getGraphicsContext2D(), brot, precisionX, precisionY);
         hideZoomTangle();
     }
@@ -403,27 +479,43 @@ public class ControllerVisualizer implements Initializable {
             zoomTangle.setLayoutX((mouseEvent.getSceneX() + canVis.getLayoutX()) - zoomTangle.getWidth() / 2);
             zoomTangle.setLayoutY((mouseEvent.getSceneY() + canVis.getLayoutY()) - zoomTangle.getHeight() / 2);
         } else if (mouseEvent.getButton() == MouseButton.SECONDARY) {
-            zoom();
+            if (zoomTangle.isDisabled()) {
+                drawStandardBrot();
+            } else {
+                zoom();
+            }
         }
     }
 
     @FXML
-    Button reset;
-
-    @FXML
     private void drawStandardBrot() {
-        brot = new Mandelbrot(50, -2.5, .5, -1, 1, 0, 0);
+        brot = new Mandelbrot(50, -2.5, .5, -1.1, 1.1, 0, 0);
+        if (isJulia.isSelected()) {
+            isJulia.setSelected(false);
+        }
         paintSet(canVis.getGraphicsContext2D(), brot);
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        try {
+            allCustomRGBS = dao.getAllCustomRGB();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        currentUser = dao.getUser("Simon");
         brot = new Mandelbrot(50, MANDELBROT_RE_MIN, MANDELBROT_RE_MAX, MANDELBROT_IM_MIN, MANDELBROT_IM_MAX, 0, 0);
-//        brot = new Mandelbrot(50, -1.5, -1, -.25, .25, 0, 0);
         gc = canVis.getGraphicsContext2D();
+        initializeCustomSetLoader();
         initializeColorSchemePicker();
         paintSet(gc, brot);
         updateStats();
+        try {
+            dao.syncCustomSet(currentUser);
+        } catch (SQLException throwables) {
+            System.out.println("NONONO");
+            throwables.printStackTrace();
+        }
     }
 
     //TODO Fix custom color scheme boundaries

@@ -2,6 +2,8 @@ package slechnert;
 
 import javafx.scene.paint.Color;
 
+import java.util.Objects;
+
 public class Mandelbrot {
 
     public enum ColorScheme {
@@ -24,14 +26,14 @@ public class Mandelbrot {
     private int convergenceSteps;
     private Color convergenceColor;
     private ColorScheme colorScheme;
-    double prePrecision;
 
+    double prePrecision;
     public int fractal_ID;
     public int customRGB_ID;
-    public double r_factor;
-    public double g_factor;
-    public double b_factor;
-
+    public double r_factor = 1;
+    public double g_factor = 1;
+    public double b_factor = 1;
+    private String customSetName;
 
     public boolean isMandelbrot() {
         // if z is 0 then it is a Mandelbrot set
@@ -48,6 +50,9 @@ public class Mandelbrot {
         this.convergenceSteps = convergenceSteps;
         this.convergenceColor = Color.WHITE;
         this.colorScheme = ColorScheme.WHITE;
+        this.customSetName = "default";
+        this.fractal_ID = 0;
+        this.customRGB_ID = 0;
     }
 
     public int getConvergenceSteps() {
@@ -136,5 +141,132 @@ public class Mandelbrot {
 
     public void setConvergenceSteps(int convergenceSteps) {
         this.convergenceSteps = convergenceSteps;
+    }
+
+    public double getPrePrecision() {
+        return prePrecision;
+    }
+
+    public String getCustomSetName() {
+        if (customSetName.equals("default")) {
+            return "";
+        }
+        return customSetName;
+    }
+
+    public int getFractal_ID() {
+        return fractal_ID;
+    }
+
+    public int getCustomRGB_ID() {
+        return customRGB_ID;
+    }
+
+    public double getR_factor() {
+        return r_factor;
+    }
+
+    public double getG_factor() {
+        return g_factor;
+    }
+
+    public double getB_factor() {
+        return b_factor;
+    }
+
+    public void setMANDELBROT_RE_MIN(double MANDELBROT_RE_MIN) {
+        this.MANDELBROT_RE_MIN = MANDELBROT_RE_MIN;
+    }
+
+    public void setMANDELBROT_RE_MAX(double MANDELBROT_RE_MAX) {
+        this.MANDELBROT_RE_MAX = MANDELBROT_RE_MAX;
+    }
+
+    public void setMANDELBROT_IM_MIN(double MANDELBROT_IM_MIN) {
+        this.MANDELBROT_IM_MIN = MANDELBROT_IM_MIN;
+    }
+
+    public void setMANDELBROT_IM_MAX(double MANDELBROT_IM_MAX) {
+        this.MANDELBROT_IM_MAX = MANDELBROT_IM_MAX;
+    }
+
+    public void setJULIA_RE_MIN(double JULIA_RE_MIN) {
+        this.JULIA_RE_MIN = JULIA_RE_MIN;
+    }
+
+    public void setJULIA_RE_MAX(double JULIA_RE_MAX) {
+        this.JULIA_RE_MAX = JULIA_RE_MAX;
+    }
+
+    public void setJULIA_IM_MIN(double JULIA_IM_MIN) {
+        this.JULIA_IM_MIN = JULIA_IM_MIN;
+    }
+
+    public void setJULIA_IM_MAX(double JULIA_IM_MAX) {
+        this.JULIA_IM_MAX = JULIA_IM_MAX;
+    }
+
+    public void setPrePrecision(double prePrecision) {
+        this.prePrecision = prePrecision;
+    }
+
+    public void setCustomSetName(String customSetName) {
+        this.customSetName = customSetName;
+    }
+
+    public void setFractal_ID(int fractal_ID) {
+        this.fractal_ID = fractal_ID;
+    }
+
+    public void setCustomRGB_ID(int customRGB_ID) {
+        this.customRGB_ID = customRGB_ID;
+    }
+
+    public void setR_factor(double r_factor) {
+        this.r_factor = r_factor;
+    }
+
+    public void setG_factor(double g_factor) {
+        this.g_factor = g_factor;
+    }
+
+    public void setB_factor(double b_factor) {
+        this.b_factor = b_factor;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Mandelbrot that = (Mandelbrot) o;
+        return Double.compare(that.MANDELBROT_RE_MIN, MANDELBROT_RE_MIN) == 0 &&
+                Double.compare(that.MANDELBROT_RE_MAX, MANDELBROT_RE_MAX) == 0 &&
+                Double.compare(that.MANDELBROT_IM_MIN, MANDELBROT_IM_MIN) == 0 &&
+                Double.compare(that.MANDELBROT_IM_MAX, MANDELBROT_IM_MAX) == 0 &&
+                Double.compare(that.JULIA_RE_MIN, JULIA_RE_MIN) == 0 &&
+                Double.compare(that.JULIA_RE_MAX, JULIA_RE_MAX) == 0 &&
+                Double.compare(that.JULIA_IM_MIN, JULIA_IM_MIN) == 0 &&
+                Double.compare(that.JULIA_IM_MAX, JULIA_IM_MAX) == 0 &&
+                Double.compare(that.z, z) == 0 &&
+                Double.compare(that.zi, zi) == 0 &&
+                convergenceSteps == that.convergenceSteps &&
+                Double.compare(that.prePrecision, prePrecision) == 0 &&
+                fractal_ID == that.fractal_ID &&
+                customRGB_ID == that.customRGB_ID &&
+                Double.compare(that.r_factor, r_factor) == 0 &&
+                Double.compare(that.g_factor, g_factor) == 0 &&
+                Double.compare(that.b_factor, b_factor) == 0 &&
+                Objects.equals(convergenceColor, that.convergenceColor) &&
+                colorScheme == that.colorScheme &&
+                Objects.equals(customSetName, that.customSetName);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(MANDELBROT_RE_MIN, MANDELBROT_RE_MAX, MANDELBROT_IM_MIN, MANDELBROT_IM_MAX, JULIA_RE_MIN, JULIA_RE_MAX, JULIA_IM_MIN, JULIA_IM_MAX, z, zi, convergenceSteps, convergenceColor, colorScheme, fractal_ID, customRGB_ID, r_factor, g_factor, b_factor, customSetName);
     }
 }

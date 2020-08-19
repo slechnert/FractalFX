@@ -1,86 +1,155 @@
-//package slechnert;
-//
-//
-//import javafx.fxml.FXML;
-//import javafx.fxml.Initializable;
-//import javafx.scene.control.Button;
-//import javafx.scene.control.Label;
-//import javafx.scene.control.PasswordField;
-//import javafx.scene.control.TextField;
-//import java.net.URL;
-//import java.util.List;
-//import java.util.ResourceBundle;
-//
-//
-////public class LoginController implements Initializable {
-////    private List<User> users;
-////    private DAO dao;
-////
-////    public LoginController() {
-////        this.dao = new DAO();
-////    }
-////
-////    private void getUserList() {
-////        users = dao.getAllUsers();
-////    }
-//
-//    @FXML
-//    private Button forgotPw;
-//
-//    @FXML
-//    private void setForgetMsg() {
-//        forgotPw.setText("Simply create a new one :)");
-//    }
-//
-//    @FXML
-//    private Label prompt;
-//    @FXML
-//    private TextField usernameTF;
-//    @FXML
-//    private PasswordField passwordField;
-//    @FXML
-//    private Button loginButton;
-//
-////    private User checkLogin() throws InterruptedException {
-////        for (User u : users) {
-////            if (u.getName().equals(usernameTF.getText()) && u.getPassword().equals(passwordField.getText())) {
-////                return u;
-////            }
-////        }
-////        Thread t = Thread.currentThread();
-////        loginButton.setDisable(true);
-////        prompt.setVisible(true);
-////        loginButton.setText("Please wait... 3");
-////        t.sleep(1000);
-////        loginButton.setText("Please wait... 2");
-////        t.sleep(1000);
-////        loginButton.setText("Please wait... 1");
-////        t.sleep(1000);
-////        loginButton.setText("Let's Go!");
-////        loginButton.setDisable(false);
-////        prompt.setVisible(false);
-////        return null;
-////    }
-////
-////    @FXML
-////    private void login() throws InterruptedException {
-////        User currentUser = checkLogin();
-////        if (currentUser != null) {
-////            //TODO swap scene and pass user
-////        }
-////    }
-//
-//    @FXML
-//    private Button newUserButton;
-//
-//    @FXML
-//    private void goToRegistration() {
-//        //TODO swap scene to registration.fxml
-//    }
-//
-//    @Override
-//    public void initialize(URL url, ResourceBundle resourceBundle) {
-//        getUserList();
-//    }
-//
-//}
+package slechnert;
+
+
+import javafx.animation.PauseTransition;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
+import javafx.stage.Stage;
+import javafx.util.Duration;
+
+import java.io.IOException;
+import java.net.URL;
+import java.util.List;
+import java.util.ResourceBundle;
+
+
+public class LoginController implements Initializable {
+    private List<User> registeredUsers;
+    private User loggedUser;
+    private DAO dao;
+    private int failedLoginCounter = 2;
+
+    public LoginController() {
+    }
+
+    private void initializeFontColor() {
+        usernameTF.setStyle("-fx-text-inner-color: darkgray; -fx-background-color:  #1c1c1c");
+        passwordField.setStyle("-fx-text-inner-color: darkgray; -fx-background-color:  #1c1c1c");
+    }
+
+    private void getUserList() {
+        registeredUsers = dao.getAllUsers();
+    }
+
+    @FXML
+    public Button close;
+
+    @FXML
+    public void stop() {
+        Stage stage = (Stage) close.getScene().getWindow();
+        stage.close();
+    }
+
+    @FXML
+    private Button forgotPw;
+
+    @FXML
+    private void setForgetMsg() {
+        forgotPw.setText("To add email recovery, donate to s.lechner.work@gmail.com");
+    }
+
+    @FXML
+    private Label prompt;
+    @FXML
+    private Label header;
+    @FXML
+    private TextField usernameTF;
+    @FXML
+    private PasswordField passwordField;
+    @FXML
+    private Button loginButton;
+
+    @FXML
+    private boolean checkLogin() {
+        for (User u : registeredUsers) {
+            if (u.getName().equalsIgnoreCase(usernameTF.getText()) && u.getPassword().equals(passwordField.getText())) {
+                loggedUser = u;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void failedLogin() {
+        prompt.setVisible(true);
+        header.setVisible(false);
+        forgotPw.setText(failedLoginCounter + " seconds penalty...");
+        loginButton.setDisable(true);
+    }
+
+    public void recoverLogin() {
+        loginButton.setDisable(false);
+        prompt.setVisible(false);
+        header.setVisible(true);
+        forgotPw.setText("Forgot your details?");
+    }
+
+    public void sleep() {
+        failedLogin();
+        PauseTransition pause = new PauseTransition(Duration.seconds(failedLoginCounter));
+        pause.setOnFinished(event -> {
+            failedLoginCounter++;
+            recoverLogin();
+        });
+        pause.play();
+    }
+
+    boolean debug = true;
+
+    @FXML
+    private void login() throws IOException, InterruptedException {
+        if (debug) {
+            FXMLLoader debug = new FXMLLoader();
+            Parent visParent = debug.load(getClass().getResource("visualizer.fxml"));
+            Scene visScene = new Scene(visParent);
+            Stage windoof = (Stage) (loginButton.getScene().getWindow());
+            windoof.hide();
+            windoof.setScene(visScene);
+            windoof.show();
+        } else {
+            if (checkLogin()) {
+                Parent visParent = FXMLLoader.load(getClass().getResource("visualizer.fxml"));
+                Scene visScene = new Scene(visParent);
+                Stage windoof = (Stage) (loginButton.getScene().getWindow());
+                windoof.hide();
+                windoof.setScene(visScene);
+                windoof.show();
+            } else {
+                sleep();
+            }
+        }
+    }
+
+    @FXML
+    private Button newUserButton;
+
+    @FXML
+    private void goToRegistration() throws IOException {
+
+        Parent regParent = FXMLLoader.load(Main.class.getResource("registration.fxml"));
+        Scene regScene = new Scene(regParent);
+        Stage window = (Stage) (newUserButton.getScene().getWindow());
+        window.hide();
+        window.setScene(regScene);
+        window.show();
+    }
+
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        initializeFontColor();
+        dao = new DAO();
+        getUserList();
+
+    }
+
+    public User getLoggedUser() {
+        return loggedUser;
+    }
+}

@@ -283,8 +283,9 @@
                                 </Label>
                                 <TextField fx:id="customSaveTF" prefHeight="25.0" prefWidth="195.0"
                                            promptText="Enter custom-set name.." GridPane.columnIndex="1"/>
-                                <Button fx:id="customSaveBtn" contentDisplay="CENTER" mnemonicParsing="false"
-                                        prefHeight="25.0" prefWidth="60.0" text="Save" GridPane.columnIndex="2">
+                                <Button fx:id="customSaveButton" contentDisplay="CENTER" mnemonicParsing="false"
+                                        onAction="#save" prefHeight="25.0" prefWidth="60.0" text="Save"
+                                        GridPane.columnIndex="2">
                                     <cursor>
                                         <Cursor fx:constant="DEFAULT"/>
                                     </cursor>
@@ -295,7 +296,7 @@
                                         <Insets left="5.0"/>
                                     </GridPane.margin>
                                 </Button>
-                                <Button fx:id="customLoaderBtn" contentDisplay="CENTER" mnemonicParsing="false"
+                                <Button fx:id="customLoadButton" contentDisplay="CENTER" mnemonicParsing="false"
                                         prefHeight="25.0" prefWidth="60.0" text="Load" GridPane.columnIndex="2"
                                         GridPane.rowIndex="1">
                                     <cursor>
@@ -308,7 +309,7 @@
                                         <Insets left="5.0"/>
                                     </GridPane.margin>
                                 </Button>
-                                <ChoiceBox fx:id="customLoaderCB" prefHeight="25.0" prefWidth="258.0"
+                                <ChoiceBox fx:id="customSetLoader" prefHeight="25.0" prefWidth="258.0"
                                            GridPane.columnIndex="1" GridPane.rowIndex="1"/>
                             </children>
                             <GridPane.margin>
@@ -327,8 +328,6 @@
                                 <ColorAdjust brightness="-0.33" hue="-1.0"/>
                             </effect>
                         </Separator>
-                        <Button fx:id="reset" mnemonicParsing="false" onAction="#drawStandardBrot" text="reset"
-                                GridPane.columnIndex="4" GridPane.rowIndex="4"/>
                     </children>
             </GridPane>
          </children>
@@ -359,7 +358,7 @@
                        <RowConstraints minHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES"/>
                    </rowConstraints>
                    <children>
-                       <Label prefHeight="44.0" prefWidth="96.0" text="RE MAX" textFill="#787878da"
+                       <Label prefHeight="44.0" prefWidth="96.0" text="RE MAX" textFill="#d36060d9"
                               GridPane.halignment="RIGHT" GridPane.rowIndex="1">
                            <font>
                                <Font name="Segoe UI Semibold" size="11.0"/>
@@ -368,7 +367,7 @@
                                <Insets left="25.0"/>
                            </padding>
                        </Label>
-                       <Label prefHeight="44.0" prefWidth="96.0" text="IM MAX" textFill="#787878da"
+                       <Label prefHeight="44.0" prefWidth="96.0" text="IM MAX" textFill="#d36060d9"
                               GridPane.halignment="RIGHT" GridPane.rowIndex="3">
                            <font>
                                <Font name="Segoe UI Semibold" size="11.0"/>
@@ -378,12 +377,12 @@
                            </padding>
                        </Label>
                        <Label fx:id="imMinStat" alignment="CENTER_RIGHT" prefHeight="44.0" prefWidth="96.0"
-                              textAlignment="RIGHT" textFill="#787878da" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                              textAlignment="RIGHT" textFill="#d36060d9" GridPane.columnIndex="1" GridPane.rowIndex="2">
                            <font>
                                <Font name="Segoe UI Semibold" size="11.0"/>
                            </font>
                        </Label>
-                       <Label prefHeight="44.0" prefWidth="96.0" text="IM MIN" textFill="#787878da"
+                       <Label prefHeight="44.0" prefWidth="96.0" text="IM MIN" textFill="#d36060d9"
                               GridPane.halignment="RIGHT" GridPane.rowIndex="2">
                            <font>
                                <Font name="Segoe UI Semibold" size="11.0"/>
@@ -393,24 +392,24 @@
                            </padding>
                        </Label>
                        <Label fx:id="reMaxStat" alignment="CENTER_RIGHT" prefHeight="44.0" prefWidth="96.0"
-                              textAlignment="RIGHT" textFill="#787878da" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                              textAlignment="RIGHT" textFill="#d36060d9" GridPane.columnIndex="1" GridPane.rowIndex="1">
                            <font>
                                <Font name="Segoe UI Semibold" size="11.0"/>
                            </font>
                        </Label>
                        <Label fx:id="reMinStat" alignment="CENTER_RIGHT" prefHeight="44.0" prefWidth="96.0"
-                              textAlignment="RIGHT" textFill="#787878da" GridPane.columnIndex="1">
+                              textAlignment="RIGHT" textFill="#d36060d9" GridPane.columnIndex="1">
                            <font>
                                <Font name="Segoe UI Semibold" size="11.0"/>
                            </font>
                        </Label>
                        <Label fx:id="imMaxStat" alignment="CENTER_RIGHT" prefHeight="44.0" prefWidth="96.0"
-                              textAlignment="RIGHT" textFill="#787878da" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                              textAlignment="RIGHT" textFill="#d36060d9" GridPane.columnIndex="1" GridPane.rowIndex="3">
                            <font>
                                <Font name="Segoe UI Semibold" size="11.0"/>
                            </font>
                        </Label>
-                       <Label alignment="CENTER" prefHeight="44.0" prefWidth="96.0" text="RE MIN:" textFill="#787878da"
+                       <Label alignment="CENTER" prefHeight="44.0" prefWidth="96.0" text="RE MIN:" textFill="#d36060d9"
                               GridPane.halignment="CENTER">
                            <font>
                                <Font name="Segoe UI Semibold" size="11.0"/>

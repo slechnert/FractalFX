@@ -7,25 +7,26 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
+import java.io.IOException;
+
 
 public class Main extends Application {
 
-    Stage daStage;
 
     @Override
-    public void start(Stage primaryStage) throws Exception {
-        MainController mc = new MainController();
-        daStage = primaryStage;
-        stageRefresh(mc.getVisScene());
+    public void start(Stage primaryStage) throws IOException {
+
+
 //login startup
-//        FXMLLoader loader = new FXMLLoader(); //instantiating my loader
-//        loader.setLocation(getClass().getResource("login.fxml")); //loading the first scene
-//        Parent root = loader.load(); //assigning the first scene from the loader to a variable
-//        primaryStage.setScene(new Scene(root)); //assigning the variable to the stage
-//        root.getStylesheets().add(getClass().getResource("Font.css").toExternalForm());
-//        primaryStage.initStyle(StageStyle.UNDECORATED);
+        FXMLLoader loader = new FXMLLoader(); //instantiating my loader
+        loader.setLocation(getClass().getResource("login.fxml")); //loading the first scene
+//        loader.setLocation(getClass().getResource("visualizer.fxml")); //loading the first scene
+        Parent root = loader.load(); //assigning the first scene from the loader to a variable
+        primaryStage.setScene(new Scene(root)); //assigning the variable to the stage
+        root.getStylesheets().add(getClass().getResource("Font.css").toExternalForm());
+        primaryStage.initStyle(StageStyle.UNDECORATED);
 //        primaryStage.initStyle(StageStyle.TRANSPARENT);
-//        primaryStage.show();
+        primaryStage.show();
     }
 
     @Override
@@ -36,12 +37,6 @@ public class Main extends Application {
     @Override
     public void stop() {
         System.out.println("App closed.");
-    }
-
-    public void stageRefresh(Scene newScene) {
-        daStage.setScene(newScene);
-        daStage.initStyle(StageStyle.UNDECORATED);
-        daStage.show();
     }
 
     public static void main(String[] args) {
