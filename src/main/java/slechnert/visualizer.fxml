@@ -297,8 +297,8 @@
                                     </GridPane.margin>
                                 </Button>
                                 <Button fx:id="customLoadButton" contentDisplay="CENTER" mnemonicParsing="false"
-                                        prefHeight="25.0" prefWidth="60.0" text="Load" GridPane.columnIndex="2"
-                                        GridPane.rowIndex="1">
+                                        onAction="#loadCustomSet" prefHeight="25.0" prefWidth="60.0" text="Load"
+                                        GridPane.columnIndex="2" GridPane.rowIndex="1">
                                     <cursor>
                                         <Cursor fx:constant="DEFAULT"/>
                                     </cursor>

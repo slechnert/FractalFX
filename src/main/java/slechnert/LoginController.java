@@ -11,6 +11,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -30,8 +31,8 @@ public class LoginController implements Initializable {
     }
 
     private void initializeFontColor() {
-        usernameTF.setStyle("-fx-text-inner-color: darkgray; -fx-background-color:  #1c1c1c");
-        passwordField.setStyle("-fx-text-inner-color: darkgray; -fx-background-color:  #1c1c1c");
+        usernameTF.setStyle("-fx-text-inner-color: white; ; -fx-background-color:  #1c1c1c");
+        passwordField.setStyle("-fx-text-inner-color: white; -fx-background-color:  #1c1c1c");
     }
 
     private void getUserList() {
@@ -101,7 +102,7 @@ public class LoginController implements Initializable {
         pause.play();
     }
 
-    boolean debug = true;
+    boolean debug = false;
 
     @FXML
     private void login() throws IOException, InterruptedException {
@@ -137,6 +138,7 @@ public class LoginController implements Initializable {
         Scene regScene = new Scene(regParent);
         Stage window = (Stage) (newUserButton.getScene().getWindow());
         window.hide();
+        regScene.setFill(Color.TRANSPARENT);
         window.setScene(regScene);
         window.show();
     }

@@ -19,10 +19,11 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
+import org.jetbrains.annotations.NotNull;
 
 import java.net.URL;
 import java.sql.SQLException;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -35,8 +36,8 @@ public class ControllerVisualizer implements Initializable {
     public double MANDELBROT_IM_MAX = 1.1;
 
 
-    public double JULIA_RE_MIN = -1.5;
-    public double JULIA_RE_MAX = 1.5;
+    public double JULIA_RE_MIN = -2.75;
+    public double JULIA_RE_MAX = 0.5;
     public double JULIA_IM_MIN = -1.5;
     public double JULIA_IM_MAX = 1.5;
 
@@ -48,32 +49,57 @@ public class ControllerVisualizer implements Initializable {
 
     private User currentUser;
     public List<CustomRGB> allCustomRGBS;
+    public List<Mandelbrot> allBrote;
+    public List<Color> allColors;
+    public List<Integer> allColorIds;
     private final DAO dao;
+
 
     public ControllerVisualizer() {
         this.dao = new DAO();
     }
 
-    public void fillAllRGB() {
-
-    }
-
+    int fractal_ID = (int) Math.random() * 1000;
     @FXML
     private ChoiceBox customSetLoader;
 
-    private void initializeCustomSetLoader() {
-//        fillCustomSetStrings();
-        customSetLoader.getItems().addAll(currentUser.customSetList);
-//        customSetLoader.getSelectionModel().select(currentUser.customSetList(0));
-//        customSetLoader.getSelectionModel().selectedItemProperty().addListener(((observableValue, oldV, newV) -> brot.setColorScheme((Mandelbrot.ColorScheme) newV)));
-//        customSetLoader.getSelectionModel().selectedItemProperty().addListener(((observableValue, oldV, newV) -> System.out.println("dafuq")));
+    private List<String> refreshCustomSetLoader() {
+        List<String> choiceBoxStrings = new ArrayList<>();
+        for (CustomSet cs : currentUser.customSetList) {
+            choiceBoxStrings.add(cs.getSet_name());
+        }
+        return choiceBoxStrings;
     }
 
-//    public void fillCustomSetStrings(){
-//           for(CustomSet cs : currentUser.customSetList){
-//               customSetStrings.add(cs.getSet_name());
-//           }
-//    }
+    private void initializeCustomSetLoader() {
+        List<String> cbStrings = refreshCustomSetLoader();
+        customSetLoader.getItems().addAll(cbStrings);
+        customSetLoader.getSelectionModel().select(currentUser.getCustomSetList().indexOf(0));
+//        customSetLoader.getSelectionModel().selectedItemProperty().addListener(((observableValue, oldV, newV) -> System.out.println("dafuq")));
+
+    }
+
+    public void loadCustomSet() {
+        CustomSet newCS = null;
+        Mandelbrot newBrot = null;
+        for (CustomSet cs : currentUser.customSetList) {
+            if (cs.getSet_name().equals(customSetLoader.getAccessibleText())
+            ) {
+                newCS = cs;
+            }
+        }
+        for (Mandelbrot b : allBrote) {
+            if (newCS == null) {
+            } else {
+                if (b.getFractal_ID() == (newCS.getFractal_ID())) {
+                    newBrot = b;
+                }
+            }
+        }
+        if (newBrot != null) {
+            paintSet(canVis.getGraphicsContext2D(), newBrot);
+        }
+    }
 
     @FXML
     public Button customSaveButton;
@@ -90,7 +116,6 @@ public class ControllerVisualizer implements Initializable {
         return fractalID;
     }
 
-    //TODO null felder logik einbauen
     public boolean isUniqueRGB() {
         double testR;
         double testG;
@@ -100,8 +125,18 @@ public class ControllerVisualizer implements Initializable {
         } else {
             testR = Double.parseDouble(customR.getText());
         }
+        if ((customG.getText()).equals("")) {
+            testG = brot.getG_factor();
+        } else {
+            testG = Double.parseDouble(customG.getText());
+        }
+        if ((customB.getText()).equals("")) {
+            testB = brot.getB_factor();
+        } else {
+            testB = Double.parseDouble(customB.getText());
+        }
         for (CustomRGB rgb : allCustomRGBS) {
-            if ((rgb.getR_factor() != testR && rgb.getG_factor() != Double.parseDouble(customG.getText()) && rgb.getB_factor() != Double.parseDouble(customB.getText()))) {
+            if ((rgb.getR_factor() != testR && rgb.getG_factor() != testG && rgb.getB_factor() != testB)) {
                 return true;
             }
         }
@@ -120,18 +155,80 @@ public class ControllerVisualizer implements Initializable {
         return customRGB_ID;
     }
 
+    public boolean isNewColor() {
+        if (allColors.contains(brot.getConvergenceColor())) {
+            return false;
+        }
+        return true;
+    }
+
+    public int getUniqueColorID() {
+        int customColorID = 1;
+        for (int i = 2; i <= allColorIds.size(); i++) {
+            for (int cid : allColorIds) {
+                if (cid == customColorID) {
+                    customColorID++;
+                }
+            }
+        }
+        return customColorID;
+    }
+
+    public void fillAllBrote() throws SQLException {
+        for (Mandelbrot brotl : allBrote) {
+            for (CustomRGB rgb : allCustomRGBS) {
+                if (brot.customRGB_ID == rgb.customRGB_ID) {
+                    brot.r_factor = rgb.r_factor;
+                    brot.g_factor = rgb.g_factor;
+                    brot.b_factor = rgb.b_factor;
+                }
+            }
+            brotl.setConvergenceColor(dao.getColor(brotl.color_ID));
+        }
+    }
+
+    public void refresh() throws SQLException {
+        allBrote = dao.getAllBrote();
+//        fillAllBrote();
+        allCustomRGBS = dao.getAllCustomRGB(); //refresh list
+        allColors = dao.getAllColors();
+        allColorIds = dao.getColorIds();
+    }
+
+
     @FXML
     public void save() throws SQLException {
-        if (!currentUser.customBrote.contains(brot)) {
-            brot.setFractal_ID(getUniquefractalID());
+
+        if (!currentUser.customBrote.contains(brot)) { //if new brot, generate and set Fractal ID
+            brot.setFractal_ID(fractal_ID);
+            fractal_ID++;
         } else {
             return;
         }
-        if (isUniqueRGB()) {
+
+        if (isUniqueRGB()) { //if new RGB factors get and set customrgb ID
             brot.setCustomRGB_ID(getUniqueCustomRGBID());
+            dao.addCustomRGB(new CustomRGB(brot.customRGB_ID, Double.parseDouble(customR.getText()), Double.parseDouble(customR.getText()), Double.parseDouble(customR.getText()))); //add new custom rgb
+        } else {
+            for (CustomRGB crgb : allCustomRGBS) {
+                if (crgb.getR_factor() == brot.r_factor && crgb.getG_factor() == brot.getG_factor() && crgb.getB_factor() == brot.b_factor) {
+                    brot.setCustomRGB_ID(crgb.getCustomRGB_ID());
+                }
+            }
         }
-        dao.addCustomRGB(new CustomRGB(brot.customRGB_ID, Double.parseDouble(customR.getText()), Double.parseDouble(customR.getText()), Double.parseDouble(customR.getText())));
-        allCustomRGBS = dao.getAllCustomRGB();
+        if (isNewColor()) {
+            brot.setColor_ID(getUniqueColorID());
+            dao.addColor(brot.convergenceColor, brot.getColor_ID());
+        } else {
+            brot.setColor_ID(dao.getSpecificColorId((brot.convergenceColor)));
+        }
+
+        dao.addMandelbrot(brot);
+        currentUser.customBrote.add(brot);
+        currentUser.customSetList.add(new CustomSet(currentUser.user_name, brot.fractal_ID, customSaveTF.getText()));
+        dao.addCustomSet(new CustomSet(currentUser.user_name, brot.fractal_ID, customSaveTF.getText()));
+        refresh();
+        refreshCustomSetLoader();
     }
 
     @FXML
@@ -168,6 +265,8 @@ public class ControllerVisualizer implements Initializable {
         colorSchemePicker.getSelectionModel().selectedItemProperty().addListener(((observableValue, oldV, newV) -> paintSet(gc, brot)));
     }
 
+    @FXML
+    public TextField customSaveTF;
     @FXML
     public TextField zTF;
 
@@ -235,16 +334,17 @@ public class ControllerVisualizer implements Initializable {
         } else {
             gc.clearRect(0, 0, canVis.getWidth(), canVis.getHeight());
             if (convTF.getText().equals("")) {
-                brot = new Mandelbrot(50, brot.MANDELBROT_RE_MIN, brot.MANDELBROT_RE_MAX, brot.MANDELBROT_IM_MIN, brot.MANDELBROT_IM_MAX, 0, 0);
+                brot = new Mandelbrot(50, MANDELBROT_RE_MIN, MANDELBROT_RE_MAX, MANDELBROT_IM_MIN, MANDELBROT_IM_MAX, 0, 0);
             } else if (Integer.parseInt(convTF.getText()) >= 1 && Integer.parseInt(convTF.getText()) <= 1000) {
-                brot = new Mandelbrot(Integer.parseInt(convTF.getText()), brot.MANDELBROT_RE_MIN, brot.MANDELBROT_RE_MAX, brot.MANDELBROT_IM_MIN, brot.MANDELBROT_IM_MAX, 0, 0);
+                brot = new Mandelbrot(Integer.parseInt(convTF.getText()), MANDELBROT_RE_MIN, MANDELBROT_RE_MAX, MANDELBROT_IM_MIN, MANDELBROT_IM_MAX, 0, 0);
             } else {
-                brot = new Mandelbrot(50, brot.MANDELBROT_RE_MIN, brot.MANDELBROT_RE_MAX, brot.MANDELBROT_IM_MIN, brot.MANDELBROT_IM_MAX, 0, 0);
+                brot = new Mandelbrot(50, MANDELBROT_RE_MIN, MANDELBROT_RE_MAX, MANDELBROT_IM_MIN, MANDELBROT_IM_MAX, 0, 0);
             }
             zTF.setDisable(true);
             ziTF.setDisable(true);
         }
         brot.setConvergenceColor(colorPicker.getValue());
+        brot.setColorScheme((Mandelbrot.ColorScheme) colorSchemePicker.getValue());
         paintSet(canVis.getGraphicsContext2D(), brot);
         updateStats();
     }
@@ -436,6 +536,8 @@ public class ControllerVisualizer implements Initializable {
         int oldConvergenceSteps = brot.getConvergenceSteps();
         double oldZ = brot.getZ();
         double oldZi = brot.getZi();
+//        Color oldConvergenceColor = brot.getConvergenceColor();
+//        Mandelbrot.ColorScheme oldColorScheme = brot.getColorScheme();
 
         //convert pixel pos to number range
         double oldReRange;
@@ -458,6 +560,11 @@ public class ControllerVisualizer implements Initializable {
 
 
         brot = new Mandelbrot(oldConvergenceSteps, newReMin, newReMax, newImMin, newImMax, oldZ, oldZi);
+//        brot.setColorScheme(oldColorScheme);
+//        brot.setConvergenceColor(oldConvergenceColor);
+        brot.setConvergenceColor(colorPicker.getValue());
+        brot.setColorScheme((Mandelbrot.ColorScheme) colorSchemePicker.getValue());
+        brot.setConvergenceColor(colorPicker.getValue());
 //        double precisionX = (oldReRange / 4) / canVis.getWidth();
 //        double precisionY = (oldImRange / 4) / canVis.getHeight();
         double precisionX = (newReMax - newReMin) / canVis.getWidth();
@@ -489,20 +596,12 @@ public class ControllerVisualizer implements Initializable {
 
     @FXML
     private void drawStandardBrot() {
-        brot = new Mandelbrot(50, -2.5, .5, -1.1, 1.1, 0, 0);
-        if (isJulia.isSelected()) {
-            isJulia.setSelected(false);
-        }
-        paintSet(canVis.getGraphicsContext2D(), brot);
+        drawJulia();
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        try {
-            allCustomRGBS = dao.getAllCustomRGB();
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
+
         currentUser = dao.getUser("Simon");
         brot = new Mandelbrot(50, MANDELBROT_RE_MIN, MANDELBROT_RE_MAX, MANDELBROT_IM_MIN, MANDELBROT_IM_MAX, 0, 0);
         gc = canVis.getGraphicsContext2D();
@@ -511,9 +610,8 @@ public class ControllerVisualizer implements Initializable {
         paintSet(gc, brot);
         updateStats();
         try {
-            dao.syncCustomSet(currentUser);
+            refresh();
         } catch (SQLException throwables) {
-            System.out.println("NONONO");
             throwables.printStackTrace();
         }
     }

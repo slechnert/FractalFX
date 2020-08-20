@@ -6,6 +6,7 @@ import java.util.Objects;
 
 public class Mandelbrot {
 
+
     public enum ColorScheme {
         GREEN, RED, YELLOW, BLUE, CYAN, MAGENTA, BLACK, WHITE
     }
@@ -23,16 +24,17 @@ public class Mandelbrot {
     // z + zi for Julia set
     private double z;
     private double zi;
-    private int convergenceSteps;
-    private Color convergenceColor;
-    private ColorScheme colorScheme;
+    public int convergenceSteps;
+    public Color convergenceColor;
+    public ColorScheme colorScheme;
+//    public String schemeString;
 
-    double prePrecision;
     public int fractal_ID;
     public int customRGB_ID;
-    public double r_factor = 1;
-    public double g_factor = 1;
-    public double b_factor = 1;
+    public int color_ID;
+    public double r_factor;
+    public double g_factor;
+    public double b_factor;
     private String customSetName;
 
     public boolean isMandelbrot() {
@@ -53,6 +55,24 @@ public class Mandelbrot {
         this.customSetName = "default";
         this.fractal_ID = 0;
         this.customRGB_ID = 0;
+        this.color_ID = 0;
+        this.r_factor = 1;
+        this.g_factor = 1;
+        this.b_factor = 1;
+    }
+
+    public Mandelbrot(double MANDELBROT_RE_MIN, double MANDELBROT_RE_MAX, double MANDELBROT_IM_MIN, double MANDELBROT_IM_MAX, double z, double zi, int convergenceSteps, int fractal_ID, int customRGB_ID, int color_ID, ColorScheme colorScheme) {
+        this.MANDELBROT_RE_MIN = MANDELBROT_RE_MIN;
+        this.MANDELBROT_RE_MAX = MANDELBROT_RE_MAX;
+        this.MANDELBROT_IM_MIN = MANDELBROT_IM_MIN;
+        this.MANDELBROT_IM_MAX = MANDELBROT_IM_MAX;
+        this.z = z;
+        this.zi = zi;
+        this.convergenceSteps = convergenceSteps;
+        this.fractal_ID = fractal_ID;
+        this.customRGB_ID = customRGB_ID;
+        this.color_ID = color_ID;
+        this.colorScheme = colorScheme;
     }
 
     public int getConvergenceSteps() {
@@ -103,6 +123,29 @@ public class Mandelbrot {
         return colorScheme;
     }
 
+    public static ColorScheme getColorScheme(String string) {
+        switch (string) {
+            case "red":
+                return ColorScheme.RED;
+            case "yellow":
+                return ColorScheme.YELLOW;
+            case "magenta":
+                return ColorScheme.MAGENTA;
+            case "blue":
+                return ColorScheme.BLUE;
+            case "green":
+                return ColorScheme.GREEN;
+            case "cyan":
+                return ColorScheme.CYAN;
+            case "black":
+                return ColorScheme.BLACK;
+            case "white":
+                return ColorScheme.WHITE;
+            default:
+                return ColorScheme.BLACK;
+        }
+    }
+
     public void setColorScheme(ColorScheme colorSchema) {
         this.colorScheme = colorSchema;
     }
@@ -141,10 +184,6 @@ public class Mandelbrot {
 
     public void setConvergenceSteps(int convergenceSteps) {
         this.convergenceSteps = convergenceSteps;
-    }
-
-    public double getPrePrecision() {
-        return prePrecision;
     }
 
     public String getCustomSetName() {
@@ -206,10 +245,6 @@ public class Mandelbrot {
         this.JULIA_IM_MAX = JULIA_IM_MAX;
     }
 
-    public void setPrePrecision(double prePrecision) {
-        this.prePrecision = prePrecision;
-    }
-
     public void setCustomSetName(String customSetName) {
         this.customSetName = customSetName;
     }
@@ -234,6 +269,14 @@ public class Mandelbrot {
         this.b_factor = b_factor;
     }
 
+    public int getColor_ID() {
+        return color_ID;
+    }
+
+    public void setColor_ID(int color_ID) {
+        this.color_ID = color_ID;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -247,16 +290,12 @@ public class Mandelbrot {
                 Double.compare(that.MANDELBROT_RE_MAX, MANDELBROT_RE_MAX) == 0 &&
                 Double.compare(that.MANDELBROT_IM_MIN, MANDELBROT_IM_MIN) == 0 &&
                 Double.compare(that.MANDELBROT_IM_MAX, MANDELBROT_IM_MAX) == 0 &&
-                Double.compare(that.JULIA_RE_MIN, JULIA_RE_MIN) == 0 &&
-                Double.compare(that.JULIA_RE_MAX, JULIA_RE_MAX) == 0 &&
-                Double.compare(that.JULIA_IM_MIN, JULIA_IM_MIN) == 0 &&
-                Double.compare(that.JULIA_IM_MAX, JULIA_IM_MAX) == 0 &&
                 Double.compare(that.z, z) == 0 &&
                 Double.compare(that.zi, zi) == 0 &&
                 convergenceSteps == that.convergenceSteps &&
-                Double.compare(that.prePrecision, prePrecision) == 0 &&
                 fractal_ID == that.fractal_ID &&
                 customRGB_ID == that.customRGB_ID &&
+                color_ID == that.color_ID &&
                 Double.compare(that.r_factor, r_factor) == 0 &&
                 Double.compare(that.g_factor, g_factor) == 0 &&
                 Double.compare(that.b_factor, b_factor) == 0 &&
@@ -267,6 +306,6 @@ public class Mandelbrot {
 
     @Override
     public int hashCode() {
-        return Objects.hash(MANDELBROT_RE_MIN, MANDELBROT_RE_MAX, MANDELBROT_IM_MIN, MANDELBROT_IM_MAX, JULIA_RE_MIN, JULIA_RE_MAX, JULIA_IM_MIN, JULIA_IM_MAX, z, zi, convergenceSteps, convergenceColor, colorScheme, fractal_ID, customRGB_ID, r_factor, g_factor, b_factor, customSetName);
+        return Objects.hash(MANDELBROT_RE_MIN, MANDELBROT_RE_MAX, MANDELBROT_IM_MIN, MANDELBROT_IM_MAX, z, zi, convergenceSteps, colorScheme, fractal_ID, customRGB_ID, color_ID, r_factor, g_factor, b_factor, customSetName);
     }
 }

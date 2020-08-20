@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class User {
-    private final String user_name;
-    private final String password;
-    private final String email;
+    public final String user_name;
+    public final String password;
+    public final String email;
     public List<CustomSet> customSetList;
     public List<Mandelbrot> customBrote;
 

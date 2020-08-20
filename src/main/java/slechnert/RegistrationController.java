@@ -12,6 +12,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.effect.ColorInput;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
+import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.stage.Stage;
 
@@ -242,7 +243,7 @@ public class RegistrationController implements Initializable {
             }
             regCreateUserButton.setDisable(true);
             regBackButton.styleProperty();
-            String bstyle = String.format("-fx-text-inner-color: %s; -fx-font-style: %s; -fx-background-color: %s;", "bold", "#54CC70");
+            String bstyle = String.format("-fx-font-style: %s; -fx-background-color: %s;", "bold", "#2dc261");
             regBackButton.setStyle(bstyle);
         } else {
             prompt.setText("Please check your details!");
@@ -259,6 +260,7 @@ public class RegistrationController implements Initializable {
         Scene logScene = new Scene(logParent);
         Stage window = (Stage) (regBackButton.getScene().getWindow());
         window.hide();
+        logScene.setFill(Color.TRANSPARENT);
         window.setScene(logScene);
         window.show();
     }
