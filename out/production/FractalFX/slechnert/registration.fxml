@@ -1,0 +1,349 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.Group?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.effect.ColorAdjust?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.effect.Glow?>
+<?import javafx.scene.effect.InnerShadow?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane prefHeight="805.0" prefWidth="652.0"
+            style="-fx-background-color: #dbdbdb00; -fx-background-radius: 15; -fx-border-color: #000000; -fx-border-width: 1; -fx-border-radius: 15;"
+            stylesheets="@Font.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="slechnert.RegistrationController">
+    <top>
+        <Pane prefHeight="163.0" prefWidth="626.0"
+              style="-fx-background-radius: 11 11 0 0; -fx-background-color: #1c1c1c; -fx-border-width: 0; -fx-border-color: #454545; -fx-border-radius: 15 15 0 0; -fx-border-insets: -3 0 0 0;"
+              BorderPane.alignment="CENTER">
+            <children>
+                <Group layoutX="24.0" layoutY="23.0">
+                    <children>
+                        <Label fx:id="header" alignment="CENTER" contentDisplay="CENTER" layoutX="56.0" layoutY="14.0"
+                               prefHeight="105.0" prefWidth="492.0" stylesheets="@Font.css" text="Registration"
+                               textAlignment="CENTER" textFill="#d9d9d9">
+                            <font>
+                                <Font name="Malgun Gothic Bold" size="65.0"/>
+                            </font>
+                            <effect>
+                                <Glow level="0.68"/>
+                            </effect>
+                        </Label>
+                        <Label fx:id="prompt" alignment="CENTER" contentDisplay="CENTER" layoutX="-18.0" layoutY="18.0"
+                               prefHeight="97.0" prefWidth="639.0" text="Username" textFill="RED" visible="false"
+                               wrapText="true">
+                            <font>
+                                <Font name="Ubuntu Bold" size="62.0"/>
+                            </font>
+                            <effect>
+                                <Glow level="0.61"/>
+                            </effect>
+                        </Label>
+               </children>
+            </Group>
+                <Button fx:id="close" alignment="TOP_RIGHT" contentDisplay="CENTER" depthTest="DISABLE"
+                        focusTraversable="false" layoutX="610.0" layoutY="6.0" mnemonicParsing="false" onAction="#stop"
+                        opacity="0.73" prefHeight="0.0" prefWidth="0.0" style="-fx-background-color: transparent;"
+                        text="X" textAlignment="JUSTIFY" textFill="#f8f8f8">
+                    <font>
+                        <Font name="System Bold" size="16.0"/>
+                    </font>
+                    <cursor>
+                        <Cursor fx:constant="HAND"/>
+                    </cursor>
+                </Button>
+         </children>
+         <effect>
+             <InnerShadow blurType="ONE_PASS_BOX" color="#656060" height="20.79" offsetY="3.0" radius="4.6975"
+                          width="0.0"/>
+         </effect>
+         <opaqueInsets>
+             <Insets/>
+         </opaqueInsets>
+      </Pane>
+   </top>
+   <center>
+       <GridPane alignment="CENTER" focusTraversable="true" prefHeight="545.0" prefWidth="626.0"
+                 style="-fx-background-color: #333333; -fx-background-radius: 0 0 15 15; -fx-border-color: #454545; -fx-border-radius: 0 0 15 15; -fx-border-width: 1 1 1 1;"
+                 BorderPane.alignment="CENTER">
+           <columnConstraints>
+               <ColumnConstraints hgrow="NEVER" maxWidth="263.0" minWidth="10.0" prefWidth="94.0"/>
+               <ColumnConstraints halignment="CENTER" maxWidth="536.0" minWidth="10.0" prefWidth="443.0"/>
+               <ColumnConstraints hgrow="SOMETIMES" maxWidth="177.0" minWidth="10.0" prefWidth="94.0"/>
+           </columnConstraints>
+           <rowConstraints>
+               <RowConstraints maxHeight="105.0" minHeight="25.0" prefHeight="64.0" vgrow="NEVER"/>
+               <RowConstraints maxHeight="400.0" minHeight="0.0" prefHeight="309.0" vgrow="SOMETIMES"/>
+               <RowConstraints maxHeight="297.0" minHeight="0.0" prefHeight="43.0" vgrow="SOMETIMES"/>
+               <RowConstraints maxHeight="352.0" minHeight="0.0" prefHeight="103.0" vgrow="SOMETIMES"/>
+               <RowConstraints maxHeight="261.0" minHeight="25.0" prefHeight="119.0" vgrow="SOMETIMES"/>
+           </rowConstraints>
+         <BorderPane.margin>
+             <Insets bottom="0.25"/>
+         </BorderPane.margin>
+         <opaqueInsets>
+             <Insets/>
+         </opaqueInsets>
+         <effect>
+             <InnerShadow color="#454545"/>
+         </effect>
+         <children>
+             <GridPane id="InputGridMomma" prefHeight="243.0" prefWidth="443.0"
+                       style="-fx-background-color: #1c1c1c; -fx-background-radius: 15;" GridPane.columnIndex="1"
+                       GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+                 <columnConstraints>
+                     <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="223.0" minWidth="10.0"
+                                        prefWidth="108.0"/>
+                     <ColumnConstraints hgrow="SOMETIMES" maxWidth="370.0" minWidth="10.0" prefWidth="281.0"/>
+                     <ColumnConstraints hgrow="SOMETIMES" maxWidth="370.0" minWidth="10.0" prefWidth="87.0"/>
+                 </columnConstraints>
+                 <rowConstraints>
+                     <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES"/>
+                     <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES"/>
+                     <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES"/>
+                     <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES"/>
+                 </rowConstraints>
+               <children>
+                   <GridPane id="usernameGrid" style="-fx-border-color: #000000; -fx-border-width: 0 0 1 0;"
+                             GridPane.columnSpan="3">
+                       <columnConstraints>
+                           <ColumnConstraints hgrow="SOMETIMES" maxWidth="219.0" minWidth="10.0" prefWidth="108.0"/>
+                           <ColumnConstraints hgrow="SOMETIMES" maxWidth="349.0" minWidth="10.0" prefWidth="281.0"/>
+                           <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="100.0" minWidth="50.0"
+                                              prefWidth="86.0"/>
+                       </columnConstraints>
+                       <rowConstraints>
+                           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                       </rowConstraints>
+                       <children>
+                           <ImageView nodeOrientation="INHERIT" GridPane.halignment="CENTER"
+                                      GridPane.valignment="CENTER">
+                           <image>
+                               <Image url="@../img/user.png"/>
+                           </image>
+                           <effect>
+                              <ColorAdjust brightness="0.2">
+                                 <input>
+                                     <InnerShadow color="#6e6e6e42" height="3.53" offsetY="2.0"
+                                                  radius="0.38249999999999995" width="0.0"/>
+                                 </input>
+                              </ColorAdjust>
+                           </effect>
+                        </ImageView>
+                           <TextField fx:id="regUserName" onKeyTyped="#checkName" opacity="0.51" prefHeight="50.0"
+                                      prefWidth="249.0" promptText="username" style="-fx-background-color: #1c1c1c;"
+                                      GridPane.columnIndex="1">
+                               <font>
+                                   <Font name="Malgun Gothic" size="21.0"/>
+                               </font>
+                           </TextField>
+                        <ImageView fx:id="regNameCheck" visible="false" GridPane.columnIndex="2">
+                           <image>
+                               <Image url="@../img/check.png"/>
+                           </image>
+                        </ImageView>
+                        <ImageView fx:id="regNameCross" visible="false" GridPane.columnIndex="2">
+                           <image>
+                               <Image url="@../img/cross.png"/>
+                           </image>
+                        </ImageView>
+                     </children>
+                  </GridPane>
+                   <GridPane id="pass1Grid" prefHeight="50.0" prefWidth="328.0"
+                             style="-fx-border-color: #333333; -fx-border-width: 1 0 1 0; -fx-border-insets: 0 0 -1 0;"
+                             GridPane.columnSpan="3" GridPane.rowIndex="1">
+                       <columnConstraints>
+                           <ColumnConstraints hgrow="SOMETIMES" maxWidth="219.0" minWidth="10.0" prefWidth="108.0"/>
+                           <ColumnConstraints hgrow="SOMETIMES" maxWidth="349.0" minWidth="10.0" prefWidth="282.0"/>
+                           <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="100.0" minWidth="50.0"
+                                              prefWidth="86.0"/>
+                       </columnConstraints>
+                       <rowConstraints>
+                           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                       </rowConstraints>
+                       <children>
+                           <ImageView GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                           <image>
+                               <Image url="@../img/pass.png"/>
+                           </image>
+                           <effect>
+                              <ColorAdjust brightness="0.2">
+                                 <input>
+                                     <InnerShadow color="#6e6e6e42" height="1.54" offsetY="2.0" radius="0.0"
+                                                  width="0.0"/>
+                                 </input>
+                              </ColorAdjust>
+                           </effect>
+                        </ImageView>
+                           <PasswordField fx:id="regPass1" onKeyTyped="#checkPass1" opacity="0.51" promptText="password"
+                                          style="-fx-background-color: #1c1c1c;" GridPane.columnIndex="1">
+                               <font>
+                                   <Font name="Ubuntu Regular" size="21.0"/>
+                               </font>
+                           </PasswordField>
+                        <ImageView fx:id="regPassCheck1" visible="false" GridPane.columnIndex="2">
+                           <image>
+                               <Image url="@../img/check.png"/>
+                           </image>
+                        </ImageView>
+                        <ImageView fx:id="regPassCross1" visible="false" GridPane.columnIndex="2">
+                           <image>
+                               <Image url="@../img/cross.png"/>
+                           </image>
+                        </ImageView>
+                     </children>
+                  </GridPane>
+                   <GridPane id="pass2Grid" prefHeight="50.0" prefWidth="328.0"
+                             style="-fx-border-color: #000000; -fx-border-width: 1 0 1 0; -fx-border-insets: -1 0 0 0;"
+                             GridPane.columnSpan="3" GridPane.rowIndex="2">
+                       <columnConstraints>
+                           <ColumnConstraints hgrow="SOMETIMES" maxWidth="219.0" minWidth="10.0" prefWidth="108.0"/>
+                           <ColumnConstraints hgrow="SOMETIMES" maxWidth="349.0" minWidth="10.0" prefWidth="282.0"/>
+                           <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="100.0" minWidth="50.0"
+                                              prefWidth="85.0"/>
+                       </columnConstraints>
+                       <rowConstraints>
+                           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                       </rowConstraints>
+                       <children>
+                           <ImageView GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                           <image>
+                               <Image url="@../img/pass.png"/>
+                           </image>
+                           <effect>
+                              <ColorAdjust brightness="0.2">
+                                 <input>
+                                     <InnerShadow color="#6e6e6e42" height="1.0" offsetY="2.0" radius="0.0"
+                                                  width="0.0"/>
+                                 </input>
+                              </ColorAdjust>
+                           </effect>
+                        </ImageView>
+                           <PasswordField fx:id="regPass2" onKeyTyped="#checkPass2" opacity="0.51"
+                                          promptText="confirm password" style="-fx-background-color: #1c1c1c;"
+                                          GridPane.columnIndex="1">
+                               <font>
+                                   <Font name="Ubuntu Regular" size="21.0"/>
+                               </font>
+                           </PasswordField>
+                        <ImageView fx:id="regPassCheck2" visible="false" GridPane.columnIndex="2">
+                           <image>
+                               <Image url="@../img/check.png"/>
+                           </image>
+                        </ImageView>
+                        <ImageView fx:id="regPassCross2" visible="false" GridPane.columnIndex="2">
+                           <image>
+                               <Image url="@../img/cross.png"/>
+                           </image>
+                        </ImageView>
+                     </children>
+                  </GridPane>
+                   <GridPane id="emailGrid"
+                             style="-fx-border-color: #333333; -fx-border-radius: 0 0 15 15; -fx-border-width: 1 0 1 0;"
+                             GridPane.columnSpan="3" GridPane.rowIndex="3">
+                       <columnConstraints>
+                           <ColumnConstraints hgrow="SOMETIMES" maxWidth="219.0" minWidth="10.0" prefWidth="108.0"/>
+                           <ColumnConstraints hgrow="SOMETIMES" maxWidth="349.0" minWidth="10.0" prefWidth="282.0"/>
+                           <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="100.0" minWidth="50.0"
+                                              prefWidth="85.0"/>
+                       </columnConstraints>
+                       <rowConstraints>
+                           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                       </rowConstraints>
+                       <children>
+                           <ImageView GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                           <image>
+                               <Image url="@../img/email.png"/>
+                           </image>
+                           <effect>
+                              <ColorAdjust brightness="0.2">
+                                 <input>
+                                     <InnerShadow color="#6e6e6e42" height="1.0" offsetY="2.0" radius="0.0"
+                                                  width="0.0"/>
+                                 </input>
+                              </ColorAdjust>
+                           </effect>
+                        </ImageView>
+                           <TextField fx:id="regEmail" onKeyTyped="#checkEmail" opacity="0.51" promptText="email"
+                                      style="-fx-background-color: #1c1c1c; -fx-background-radius: 0 0 15 15;"
+                                      GridPane.columnIndex="1">
+                               <font>
+                                   <Font name="Ubuntu Regular" size="21.0"/>
+                               </font>
+                           </TextField>
+                        <ImageView fx:id="regEmailCheck" visible="false" GridPane.columnIndex="2">
+                           <image>
+                               <Image url="@../img/check.png"/>
+                           </image>
+                        </ImageView>
+                        <ImageView fx:id="regEmailCross" visible="false" GridPane.columnIndex="2">
+                           <image>
+                               <Image url="@../img/cross.png"/>
+                           </image>
+                        </ImageView>
+                     </children>
+                  </GridPane>
+               </children>
+               <effect>
+                  <InnerShadow height="12.1" radius="6.775" width="17.0">
+                     <input>
+                         <DropShadow blurType="ONE_PASS_BOX" color="#8d8d8d" height="1.0" offsetY="1.0" radius="0.0"
+                                     width="0.0"/>
+                     </input>
+                  </InnerShadow>
+               </effect>
+            </GridPane>
+             <Button fx:id="regBackButton" alignment="CENTER" mnemonicParsing="false" onAction="#toLogin"
+                     prefHeight="64.0" prefWidth="250.0"
+                     style="-fx-background-radius: 15; -fx-background-color: #904040; -fx-border-radius: 15; -fx-border-color: #71808a;"
+                     text="&lt;&lt; Back to Login" textFill="#ffffffa1" GridPane.columnIndex="1" GridPane.rowIndex="4"
+                     GridPane.valignment="CENTER">
+                 <font>
+                     <Font name="Ubuntu Bold" size="20.0"/>
+                 </font>
+                 <effect>
+                     <DropShadow color="#666666c9">
+                         <input>
+                             <InnerShadow color="#000000af" height="6.17" radius="2.585" width="6.17"/>
+                         </input>
+                     </DropShadow>
+                 </effect>
+               <GridPane.margin>
+                   <Insets/>
+               </GridPane.margin>
+            </Button>
+             <Button fx:id="regCreateUserButton" mnemonicParsing="false" onAction="#createUser" prefHeight="103.0"
+                     prefWidth="566.0"
+                     style="-fx-background-color: #6da893; -fx-background-radius: 15; -fx-border-color: #333333; -fx-border-radius: 15; -fx-border-width: 1; -fx-border-insets: -1 0 -1 0;"
+                     text="Create User!" textFill="#e3e3e3" GridPane.columnIndex="1" GridPane.rowIndex="3"
+                     GridPane.valignment="CENTER">
+                 <GridPane.margin>
+                     <Insets bottom="5.0"/>
+                 </GridPane.margin>
+                 <font>
+                     <Font name="Ubuntu Bold" size="32.0"/>
+                 </font>
+                 <effect>
+                     <InnerShadow choke="0.58" color="#618073de" height="23.0" offsetX="0.5" offsetY="-1.5"
+                                  radius="11.0" width="23.0"/>
+                 </effect>
+             </Button>
+         </children>
+      </GridPane>
+   </center>
+   <opaqueInsets>
+       <Insets/>
+   </opaqueInsets>
+</BorderPane>

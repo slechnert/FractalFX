@@ -36,8 +36,8 @@ public class ControllerVisualizer implements Initializable {
     public double MANDELBROT_IM_MAX = 1.1;
 
 
-    public double JULIA_RE_MIN = -2.75;
-    public double JULIA_RE_MAX = 0.5;
+    public double JULIA_RE_MIN = -3;
+    public double JULIA_RE_MAX = 0;
     public double JULIA_IM_MIN = -1.5;
     public double JULIA_IM_MAX = 1.5;
 
@@ -349,7 +349,7 @@ public class ControllerVisualizer implements Initializable {
         updateStats();
     }
 
-    //pixelwriter draw
+    //pixelwriter paint
     private void paintSet(GraphicsContext ctx, Mandelbrot brot) {
         double precision = Math.max((brot.MANDELBROT_RE_MAX - brot.MANDELBROT_RE_MIN) / canVis.getWidth(), (brot.MANDELBROT_IM_MAX - brot.MANDELBROT_IM_MIN) / canVis.getHeight());
         double convergenceValue;
@@ -372,15 +372,11 @@ public class ControllerVisualizer implements Initializable {
                 } else {
                     color = brot.getConvergenceColor();
                 }
-                if (brot.isMandelbrot()) {
                     p.setColor((int) xR, (int) yR, color);
-                } else {
-                    p.setColor((int) xR, (int) yR, color);
-                }
             }
         }
         updateStats();
-        System.out.println("Fractal was drawn!");
+//        System.out.println("Fractal was drawn!");
     }
 
     private int checkConvergence(double ci, double c, double z, double zi, int convergenceSteps) {

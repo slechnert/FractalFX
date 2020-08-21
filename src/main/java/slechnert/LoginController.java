@@ -53,7 +53,7 @@ public class LoginController implements Initializable {
 
     @FXML
     private void setForgetMsg() {
-        forgotPw.setText("To add email recovery, donate to s.lechner.work@gmail.com");
+        forgotPw.setText("To recover your data, donate to s.lechner.work@gmail.com");
     }
 
     @FXML
