@@ -36,5 +36,7 @@
 ***8)***	**Day 10:** ...give a presentation of the process and result :)
 
 
-	
-
+	### Update
+	Holy moly, what a wild ride.
+	Only little was happening as expected, still happy with my progress and will update progression soon!
+	(Presentation went  very well tho :D )
