@@ -55,7 +55,7 @@ public class Mandelbrot {
         this.customSetName = "default";
         this.fractal_ID = 0;
         this.customRGB_ID = 0;
-        this.color_ID = 0;
+        this.color_ID = 1000;
         this.r_factor = 1;
         this.g_factor = 1;
         this.b_factor = 1;
@@ -293,19 +293,17 @@ public class Mandelbrot {
                 Double.compare(that.z, z) == 0 &&
                 Double.compare(that.zi, zi) == 0 &&
                 convergenceSteps == that.convergenceSteps &&
-                fractal_ID == that.fractal_ID &&
                 customRGB_ID == that.customRGB_ID &&
                 color_ID == that.color_ID &&
                 Double.compare(that.r_factor, r_factor) == 0 &&
                 Double.compare(that.g_factor, g_factor) == 0 &&
                 Double.compare(that.b_factor, b_factor) == 0 &&
                 Objects.equals(convergenceColor, that.convergenceColor) &&
-                colorScheme == that.colorScheme &&
-                Objects.equals(customSetName, that.customSetName);
+                colorScheme == that.colorScheme;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(MANDELBROT_RE_MIN, MANDELBROT_RE_MAX, MANDELBROT_IM_MIN, MANDELBROT_IM_MAX, z, zi, convergenceSteps, colorScheme, fractal_ID, customRGB_ID, color_ID, r_factor, g_factor, b_factor, customSetName);
+        return Objects.hash(MANDELBROT_RE_MIN, MANDELBROT_RE_MAX, MANDELBROT_IM_MIN, MANDELBROT_IM_MAX, z, zi, convergenceSteps, colorScheme, customRGB_ID, color_ID, r_factor, g_factor, b_factor);
     }
 }

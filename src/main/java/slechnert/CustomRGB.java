@@ -6,6 +6,12 @@ public class CustomRGB {
     public double g_factor;
     public double b_factor;
 
+    public CustomRGB(double r_factor, double g_factor, double b_factor) {
+        this.r_factor = r_factor;
+        this.g_factor = g_factor;
+        this.b_factor = b_factor;
+    }
+
     public CustomRGB(int customRGB_ID, double r_factor, double g_factor, double b_factor) {
         this.customRGB_ID = customRGB_ID;
         this.r_factor = r_factor;

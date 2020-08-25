@@ -102,7 +102,7 @@ public class LoginController implements Initializable {
         pause.play();
     }
 
-    boolean debug = false;
+    boolean debug = true;
 
     @FXML
     private void login() throws IOException, InterruptedException {

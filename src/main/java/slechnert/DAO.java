@@ -2,7 +2,6 @@ package slechnert;
 
 import com.mysql.cj.protocol.Resultset;
 import javafx.scene.paint.Color;
-import org.jetbrains.annotations.NotNull;
 
 import java.sql.*;
 import java.util.*;
@@ -10,9 +9,9 @@ import java.util.*;
 import static javax.swing.UIManager.getInt;
 
 public class DAO {
-    int fractal_ID;
+
+
     public DAO() {
-        this.fractal_ID = 99;
 //        try {
 //            Class.forName("com.mysql.jdbc.Driver");
 //        } catch (ClassNotFoundException e) {
@@ -44,7 +43,7 @@ public class DAO {
         return true;
     }
 
-    public boolean createUser(@NotNull User user) {
+    public boolean createUser(User user) {
         try {
             Connection connection = openConnection();
             PreparedStatement insertStatement = connection.prepareStatement(
@@ -174,12 +173,14 @@ public class DAO {
         PreparedStatement getColor = connection.prepareStatement("SELECT * FROM color WHERE color_id = ?");
         getColor.setInt(1, color_id);
         ResultSet rs = getColor.executeQuery();
-        double red = rs.getInt("red");
-        double green = rs.getInt("green");
-        double blue = rs.getInt("blue");
-        return (Color.color(red / 255, green / 255, blue / 255));
+        while (rs.next()) {
+            double red = rs.getInt("red");
+            double green = rs.getInt("green");
+            double blue = rs.getInt("blue");
+            return (Color.color(red / 255, green / 255, blue / 255));
+        }
+        return null;
     }
-
 
     public int getSpecificColorId(Color color) throws SQLException {
         Connection connection = openConnection();
@@ -212,43 +213,49 @@ public class DAO {
     }
 
 
-    public void addColor(Color color, int colorID) throws SQLException {
+    public void addColor(Color color) throws SQLException {
         Connection connection = openConnection();
-        PreparedStatement addColor = connection.prepareStatement("INSERT INTO color(color_ID, red, blue, green) VALUES(?,?,?,?)");
-        addColor.setInt(1, colorID);
-        addColor.setInt(2, ((int) color.getRed() * 255));
-        addColor.setInt(3, ((int) color.getGreen() * 255));
-        addColor.setInt(4, ((int) color.getBlue() * 255));
+        PreparedStatement addColor = connection.prepareStatement("INSERT INTO color(red, blue, green) VALUES(?,?,?)");
+        addColor.setInt(1, ((int) color.getRed() * 255));
+        addColor.setInt(2, ((int) color.getGreen() * 255));
+        addColor.setInt(3, ((int) color.getBlue() * 255));
         addColor.execute();
         closeConnection(connection);
     }
 
     public void addCustomRGB(CustomRGB rgb) throws SQLException {
         Connection connection = openConnection();
-        PreparedStatement addcustomrbg = connection.prepareStatement("INSERT INTO customrgb(customRGB_ID, r_factor, g_factor, b_factor) VALUES(?,?,?,?)");
-        addcustomrbg.setInt(1, rgb.getCustomRGB_ID());
-        addcustomrbg.setDouble(2, rgb.getR_factor());
-        addcustomrbg.setDouble(3, rgb.getG_factor());
-        addcustomrbg.setDouble(4, rgb.getB_factor());
+        PreparedStatement addcustomrbg = connection.prepareStatement("INSERT INTO customrgb(r_factor, g_factor, b_factor) VALUES(?,?,?)");
+        addcustomrbg.setDouble(1, rgb.getR_factor());
+        addcustomrbg.setDouble(2, rgb.getG_factor());
+        addcustomrbg.setDouble(3, rgb.getB_factor());
         addcustomrbg.execute();
         closeConnection(connection);
     }
 
+    public int getLastID() throws SQLException {
+        Connection connection = openConnection();
+        PreparedStatement lastID = connection.prepareStatement("SELECT * FROM fractal ORDER BY fractal.fractal_ID DESC LIMIT 1");
+        ResultSet rs = lastID.executeQuery();
+        while(rs.next()){
+            return rs.getInt("fractal_ID");
+        }
+        return rs.getInt("fractal_ID");
+    }
+
     public void addMandelbrot(Mandelbrot brot) throws SQLException {
         Connection connection = openConnection();
-        PreparedStatement addcustombrot = connection.prepareStatement("INSERT INTO fractal(fractal_ID, customRGB_ID, base_color, color_scheme, convergence_steps, re_min, re_max, im_min, im_max, z, zi) VALUES(?,?,?,?,?,?,?,?,?,?,?)");
-        fractal_ID++;
-        addcustombrot.setInt(1, brot.getFractal_ID());
-        addcustombrot.setInt(2, brot.getCustomRGB_ID());
-        addcustombrot.setInt(3, brot.getColor_ID());
-        addcustombrot.setString(4, brot.getColorScheme().toString());
-        addcustombrot.setInt(5, brot.getConvergenceSteps());
-        addcustombrot.setDouble(6, brot.getReMin());
-        addcustombrot.setDouble(7, brot.getReMax());
-        addcustombrot.setDouble(8, brot.getImMin());
-        addcustombrot.setDouble(9, brot.getImMax());
-        addcustombrot.setDouble(10, brot.getZ());
-        addcustombrot.setDouble(11, brot.getZi());
+        PreparedStatement addcustombrot = connection.prepareStatement("INSERT INTO fractal(customRGB_ID, base_color, color_scheme, convergence_steps, re_min, re_max, im_min, im_max, z, zi) VALUES(?,?,?,?,?,?,?,?,?,?)");
+        addcustombrot.setInt(1, brot.getCustomRGB_ID());
+        addcustombrot.setInt(2, brot.getColor_ID());
+        addcustombrot.setString(3, brot.getColorScheme().toString());
+        addcustombrot.setInt(4, brot.getConvergenceSteps());
+        addcustombrot.setDouble(5, brot.getReMin());
+        addcustombrot.setDouble(6, brot.getReMax());
+        addcustombrot.setDouble(7, brot.getImMin());
+        addcustombrot.setDouble(8, brot.getImMax());
+        addcustombrot.setDouble(9, brot.getZ());
+        addcustombrot.setDouble(10, brot.getZi());
         addcustombrot.execute();
         closeConnection(connection);
     }

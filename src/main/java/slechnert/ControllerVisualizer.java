@@ -19,7 +19,6 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
-import org.jetbrains.annotations.NotNull;
 
 import java.net.URL;
 import java.sql.SQLException;
@@ -59,7 +58,6 @@ public class ControllerVisualizer implements Initializable {
         this.dao = new DAO();
     }
 
-    int fractal_ID = (int) Math.random() * 1000;
     @FXML
     private ChoiceBox customSetLoader;
 
@@ -104,22 +102,13 @@ public class ControllerVisualizer implements Initializable {
     @FXML
     public Button customSaveButton;
 
-    public int getUniquefractalID() {
-        int fractalID = 1;
-        for (int i = 2; i <= 999; i++) {
-            for (Mandelbrot mb : currentUser.customBrote) {
-                if (mb.fractal_ID == i) {
-                    fractalID++;
-                }
-            }
-        }
-        return fractalID;
-    }
-
     public boolean isUniqueRGB() {
         double testR;
         double testG;
         double testB;
+        if(allCustomRGBS.size() == 0){
+            return true;
+        }
         if ((customR.getText()).equals("")) {
             testR = brot.getR_factor();
         } else {
@@ -143,18 +132,6 @@ public class ControllerVisualizer implements Initializable {
         return false;
     }
 
-    public int getUniqueCustomRGBID() {
-        int customRGB_ID = 1;
-        for (int i = 2; i <= allCustomRGBS.size(); i++) {
-            for (CustomRGB rgb : allCustomRGBS) {
-                if (customRGB_ID == rgb.customRGB_ID) {
-                    customRGB_ID++;
-                }
-            }
-        }
-        return customRGB_ID;
-    }
-
     public boolean isNewColor() {
         if (allColors.contains(brot.getConvergenceColor())) {
             return false;
@@ -162,25 +139,16 @@ public class ControllerVisualizer implements Initializable {
         return true;
     }
 
-    public int getUniqueColorID() {
-        int customColorID = 1;
-        for (int i = 2; i <= allColorIds.size(); i++) {
-            for (int cid : allColorIds) {
-                if (cid == customColorID) {
-                    customColorID++;
-                }
-            }
-        }
-        return customColorID;
-    }
-
     public void fillAllBrote() throws SQLException {
+        if (allBrote.isEmpty() || allCustomRGBS.isEmpty()) {
+            return;
+        }
         for (Mandelbrot brotl : allBrote) {
             for (CustomRGB rgb : allCustomRGBS) {
-                if (brot.customRGB_ID == rgb.customRGB_ID) {
-                    brot.r_factor = rgb.r_factor;
-                    brot.g_factor = rgb.g_factor;
-                    brot.b_factor = rgb.b_factor;
+                if (brotl.customRGB_ID == rgb.customRGB_ID) {
+                    brotl.r_factor = rgb.r_factor;
+                    brotl.g_factor = rgb.g_factor;
+                    brotl.b_factor = rgb.b_factor;
                 }
             }
             brotl.setConvergenceColor(dao.getColor(brotl.color_ID));
@@ -189,46 +157,44 @@ public class ControllerVisualizer implements Initializable {
 
     public void refresh() throws SQLException {
         allBrote = dao.getAllBrote();
-//        fillAllBrote();
         allCustomRGBS = dao.getAllCustomRGB(); //refresh list
         allColors = dao.getAllColors();
         allColorIds = dao.getColorIds();
+        fillAllBrote();
     }
 
 
     @FXML
     public void save() throws SQLException {
 
-        if (!currentUser.customBrote.contains(brot)) { //if new brot, generate and set Fractal ID
-            brot.setFractal_ID(fractal_ID);
-            fractal_ID++;
-        } else {
-            return;
-        }
-
-        if (isUniqueRGB()) { //if new RGB factors get and set customrgb ID
-            brot.setCustomRGB_ID(getUniqueCustomRGBID());
-            dao.addCustomRGB(new CustomRGB(brot.customRGB_ID, Double.parseDouble(customR.getText()), Double.parseDouble(customR.getText()), Double.parseDouble(customR.getText()))); //add new custom rgb
-        } else {
-            for (CustomRGB crgb : allCustomRGBS) {
-                if (crgb.getR_factor() == brot.r_factor && crgb.getG_factor() == brot.getG_factor() && crgb.getB_factor() == brot.b_factor) {
-                    brot.setCustomRGB_ID(crgb.getCustomRGB_ID());
-                }
-            }
-        }
         if (isNewColor()) {
-            brot.setColor_ID(getUniqueColorID());
-            dao.addColor(brot.convergenceColor, brot.getColor_ID());
+            dao.addColor(brot.convergenceColor);
         } else {
             brot.setColor_ID(dao.getSpecificColorId((brot.convergenceColor)));
         }
 
+        if (isUniqueRGB()) { //if new RGB factors save and get
+            Double newCustomR = customR.getText().equals("") ? 1 : Double.parseDouble(customR.getText());
+            Double newCustomG = customG.getText().equals("") ? 1 : Double.parseDouble(customG.getText());
+            Double newCustomB = customB.getText().equals("") ? 1 : Double.parseDouble(customB.getText());
+            dao.addCustomRGB(new CustomRGB(newCustomR, newCustomG, newCustomB)); //add new custom rgb
+            allCustomRGBS = dao.getAllCustomRGB(); //refresh list
+        }
+        for (CustomRGB crgb : allCustomRGBS) {
+            if (crgb.getR_factor() == brot.r_factor && crgb.getG_factor() == brot.getG_factor() && crgb.getB_factor() == brot.b_factor) {
+                brot.setCustomRGB_ID(crgb.getCustomRGB_ID());
+            }
+        }
+
+
         dao.addMandelbrot(brot);
-        currentUser.customBrote.add(brot);
+        brot.fractal_ID = dao.getLastID();
+        refresh();
         currentUser.customSetList.add(new CustomSet(currentUser.user_name, brot.fractal_ID, customSaveTF.getText()));
         dao.addCustomSet(new CustomSet(currentUser.user_name, brot.fractal_ID, customSaveTF.getText()));
         refresh();
         refreshCustomSetLoader();
+
     }
 
     @FXML
@@ -372,7 +338,7 @@ public class ControllerVisualizer implements Initializable {
                 } else {
                     color = brot.getConvergenceColor();
                 }
-                    p.setColor((int) xR, (int) yR, color);
+                p.setColor((int) xR, (int) yR, color);
             }
         }
         updateStats();
