@@ -17,6 +17,7 @@ import javafx.util.Duration;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -102,13 +103,13 @@ public class LoginController implements Initializable {
         pause.play();
     }
 
-    boolean debug = true;
+    boolean debug = false;
 
     @FXML
-    private void login() throws IOException, InterruptedException {
+    private void login() throws IOException, SQLException {
         if (debug) {
             FXMLLoader debug = new FXMLLoader();
-            Parent visParent = debug.load(getClass().getResource("visualizer.fxml"));
+            Parent visParent = FXMLLoader.load(getClass().getResource("visualizer.fxml"));
             Scene visScene = new Scene(visParent);
             Stage windoof = (Stage) (loginButton.getScene().getWindow());
             windoof.hide();
@@ -116,7 +117,12 @@ public class LoginController implements Initializable {
             windoof.show();
         } else {
             if (checkLogin()) {
-                Parent visParent = FXMLLoader.load(getClass().getResource("visualizer.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("visualizer.fxml"));
+                // TODO has to be loaded to set user, cant be loaded without user set ?!
+                ControllerVisualizer cv = loader.getController();
+                Parent visParent = loader.load();
+                dao.fillUserCustomSets(loggedUser);
+                cv.setCurrentUser(loggedUser);
                 Scene visScene = new Scene(visParent);
                 Stage windoof = (Stage) (loginButton.getScene().getWindow());
                 windoof.hide();
@@ -133,7 +139,6 @@ public class LoginController implements Initializable {
 
     @FXML
     private void goToRegistration() throws IOException {
-
         Parent regParent = FXMLLoader.load(Main.class.getResource("registration.fxml"));
         Scene regScene = new Scene(regParent);
         Stage window = (Stage) (newUserButton.getScene().getWindow());

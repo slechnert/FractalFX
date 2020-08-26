@@ -607,8 +607,7 @@ public class ControllerVisualizer implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-
-        currentUser = dao.getUser("Simon");
+//        currentUser = dao.getUser("Simon");
         brot = new Mandelbrot(50, MANDELBROT_RE_MIN, MANDELBROT_RE_MAX, MANDELBROT_IM_MIN, MANDELBROT_IM_MAX, 0, 0);
         gc = canVis.getGraphicsContext2D();
         initializeCustomSetLoader();
@@ -625,6 +624,13 @@ public class ControllerVisualizer implements Initializable {
     //TODO Fix custom color scheme boundaries
     //TODO number range + zoom
 
+    public User getCurrentUser() {
+        return currentUser;
+    }
+
+    public void setCurrentUser(User currentUser) {
+        this.currentUser = currentUser;
+    }
 }
 
 
