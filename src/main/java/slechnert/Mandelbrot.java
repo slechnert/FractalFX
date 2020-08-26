@@ -124,22 +124,22 @@ public class Mandelbrot {
     }
 
     public static ColorScheme getColorScheme(String string) {
-        switch (string) {
-            case "red":
+        switch (string.toUpperCase()) {
+            case "RED":
                 return ColorScheme.RED;
-            case "yellow":
+            case "YELLOW":
                 return ColorScheme.YELLOW;
-            case "magenta":
+            case "MAGENTA":
                 return ColorScheme.MAGENTA;
-            case "blue":
+            case "BLUE":
                 return ColorScheme.BLUE;
-            case "green":
+            case "GREEN":
                 return ColorScheme.GREEN;
-            case "cyan":
+            case "CYAN":
                 return ColorScheme.CYAN;
-            case "black":
+            case "BLACK":
                 return ColorScheme.BLACK;
-            case "white":
+            case "WHITE":
                 return ColorScheme.WHITE;
             default:
                 return ColorScheme.BLACK;
@@ -304,6 +304,6 @@ public class Mandelbrot {
 
     @Override
     public int hashCode() {
-        return Objects.hash(MANDELBROT_RE_MIN, MANDELBROT_RE_MAX, MANDELBROT_IM_MIN, MANDELBROT_IM_MAX, z, zi, convergenceSteps, colorScheme, customRGB_ID, color_ID, r_factor, g_factor, b_factor);
+        return Objects.hash(MANDELBROT_RE_MIN, MANDELBROT_RE_MAX, MANDELBROT_IM_MIN, MANDELBROT_IM_MAX, z, zi, convergenceSteps, customRGB_ID, color_ID, r_factor, g_factor, b_factor, convergenceColor, colorScheme);
     }
 }

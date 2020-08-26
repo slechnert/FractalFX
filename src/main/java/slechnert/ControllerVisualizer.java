@@ -1,9 +1,5 @@
 package slechnert;
 
-
-import javafx.beans.Observable;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.canvas.Canvas;
@@ -26,11 +22,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
-import java.util.stream.Collectors;
 
 public class ControllerVisualizer implements Initializable {
-    public double MANDELBROT_RE_MIN = -2.7;
-    public double MANDELBROT_RE_MAX = 0.5;
+//    public double MANDELBROT_RE_MIN = -2.7;
+//    public double MANDELBROT_RE_MAX = 0.5;
+//    public double MANDELBROT_IM_MIN = -1.1;
+//    public double MANDELBROT_IM_MAX = 1.1;
+
+    public double MANDELBROT_RE_MIN = -2;
+    public double MANDELBROT_RE_MAX = 1;
     public double MANDELBROT_IM_MIN = -1.1;
     public double MANDELBROT_IM_MAX = 1.1;
 
@@ -77,12 +77,11 @@ public class ControllerVisualizer implements Initializable {
 
     }
 
-    public void loadCustomSet() {
+    public void loadCustomSet() throws SQLException {
         CustomSet newCS = null;
         Mandelbrot newBrot = null;
         for (CustomSet cs : currentUser.customSetList) {
-            if (cs.getSet_name().equals(customSetLoader.getAccessibleText())
-            ) {
+            if (cs.getSet_name().equals(customSetLoader.getValue())) {
                 newCS = cs;
             }
         }
@@ -91,12 +90,22 @@ public class ControllerVisualizer implements Initializable {
             } else {
                 if (b.getFractal_ID() == (newCS.getFractal_ID())) {
                     newBrot = b;
+                    newBrot.setCustomSetName(newCS.getSet_name());
                 }
             }
         }
-        if (newBrot != null) {
-            paintSet(canVis.getGraphicsContext2D(), newBrot);
+        for (CustomRGB rgb : allCustomRGBS) {
+            assert newBrot != null;
+            if (newBrot.customRGB_ID == rgb.customRGB_ID) {
+                newBrot.r_factor = rgb.r_factor;
+                newBrot.g_factor = rgb.g_factor;
+                newBrot.b_factor = rgb.b_factor;
+            }
         }
+        newBrot.setConvergenceColor(dao.getColor(newBrot.color_ID));
+        paintSet(canVis.getGraphicsContext2D(), newBrot);
+        this.brot = newBrot;
+        updateStats();
     }
 
     @FXML
@@ -106,7 +115,7 @@ public class ControllerVisualizer implements Initializable {
         double testR;
         double testG;
         double testB;
-        if(allCustomRGBS.size() == 0){
+        if (allCustomRGBS.size() == 0) {
             return true;
         }
         if ((customR.getText()).equals("")) {
@@ -139,6 +148,16 @@ public class ControllerVisualizer implements Initializable {
         return true;
     }
 
+    public boolean isNewBrot(){
+        for(Mandelbrot b : allBrote){
+            if(brot.equals(b)){
+                brot.setFractal_ID(b.fractal_ID);
+                return false;
+            }
+        } return true;
+    }
+
+
     public void fillAllBrote() throws SQLException {
         if (allBrote.isEmpty() || allCustomRGBS.isEmpty()) {
             return;
@@ -163,12 +182,20 @@ public class ControllerVisualizer implements Initializable {
         fillAllBrote();
     }
 
+    public boolean isNewCustomSet(){
+        for(CustomSet cs : currentUser.customSetList){
+            if(cs.getFractal_ID() == brot.fractal_ID){
+                return false;
+            }
+        } return true;
+    }
 
     @FXML
     public void save() throws SQLException {
 
         if (isNewColor()) {
             dao.addColor(brot.convergenceColor);
+            brot.setColor_ID(dao.getSpecificColorId(brot.convergenceColor));
         } else {
             brot.setColor_ID(dao.getSpecificColorId((brot.convergenceColor)));
         }
@@ -186,14 +213,25 @@ public class ControllerVisualizer implements Initializable {
             }
         }
 
+        if(!isNewBrot()){
+        } else {
+            dao.addMandelbrot(brot);
+            brot.fractal_ID = dao.getLastID();
+        }
 
-        dao.addMandelbrot(brot);
-        brot.fractal_ID = dao.getLastID();
+        if(isNewCustomSet()){
+            currentUser.customSetList.add(new CustomSet(currentUser.user_name, brot.fractal_ID, customSaveTF.getText()));
+            dao.addCustomSet(new CustomSet(currentUser.user_name, brot.fractal_ID, customSaveTF.getText()));
+            refresh();
+            refreshCustomSetLoader();
+        } else {
+            for(CustomSet cs : currentUser.customSetList){
+                if(cs.getFractal_ID() == brot.getFractal_ID()){
+                    customSaveTF.setText(cs.getSet_name());
+                }
+            }
+        }
         refresh();
-        currentUser.customSetList.add(new CustomSet(currentUser.user_name, brot.fractal_ID, customSaveTF.getText()));
-        dao.addCustomSet(new CustomSet(currentUser.user_name, brot.fractal_ID, customSaveTF.getText()));
-        refresh();
-        refreshCustomSetLoader();
 
     }
 
@@ -318,11 +356,13 @@ public class ControllerVisualizer implements Initializable {
     //pixelwriter paint
     private void paintSet(GraphicsContext ctx, Mandelbrot brot) {
         double precision = Math.max((brot.MANDELBROT_RE_MAX - brot.MANDELBROT_RE_MIN) / canVis.getWidth(), (brot.MANDELBROT_IM_MAX - brot.MANDELBROT_IM_MIN) / canVis.getHeight());
+        double precisionX = (brot.MANDELBROT_RE_MAX - brot.MANDELBROT_RE_MIN) / canVis.getWidth();
+        double precisionY = (brot.MANDELBROT_IM_MAX - brot.MANDELBROT_IM_MIN) / canVis.getHeight();
         double convergenceValue;
         PixelWriter p = ctx.getPixelWriter();
 
-        for (double c = brot.MANDELBROT_RE_MIN, xR = 0; xR < canVis.getWidth(); c += precision, xR++) {
-            for (double ci = brot.MANDELBROT_IM_MIN, yR = 0; yR < canVis.getHeight(); ci += precision, yR++) {
+        for (double c = brot.MANDELBROT_RE_MIN, xR = 0; xR < canVis.getWidth(); c += precisionX, xR++) {
+            for (double ci = brot.MANDELBROT_IM_MIN, yR = 0; yR < canVis.getHeight(); ci += precisionY, yR++) {
                 if (brot.isMandelbrot()) {
                     convergenceValue = checkConvergence(ci, c, 0, 0, brot.getConvergenceSteps());
                 } else { //is Julia
@@ -342,7 +382,7 @@ public class ControllerVisualizer implements Initializable {
             }
         }
         updateStats();
-//        System.out.println("Fractal was drawn!");
+        System.out.println("Fractal was drawn!");
     }
 
     private int checkConvergence(double ci, double c, double z, double zi, int convergenceSteps) {
@@ -435,6 +475,10 @@ public class ControllerVisualizer implements Initializable {
         reMaxStat.setText(String.valueOf(brot.getMANDELBROT_RE_MAX()));
         imMinStat.setText(String.valueOf(brot.getMANDELBROT_IM_MIN()));
         imMaxStat.setText(String.valueOf(brot.getMANDELBROT_IM_MAX()));
+        zTF.setText(String.valueOf(brot.getZ()));
+        ziTF.setText(String.valueOf(brot.getZi()));
+        convTF.setText(String.valueOf(brot.getConvergenceSteps()));
+        colorSchemePicker.setValue(brot.getColorScheme());
     }
 
 
@@ -446,8 +490,8 @@ public class ControllerVisualizer implements Initializable {
         PixelWriter p = ctx.getPixelWriter();
         double convergenceValue;
         double precision = Math.max(precisionX, precisionY);
-        for (double c = zoombrot.MANDELBROT_RE_MIN, xR = 0; xR < canVis.getWidth(); c += precision, xR++) {
-            for (double ci = zoombrot.MANDELBROT_IM_MIN, yR = 0; yR < canVis.getHeight(); ci += precision, yR++) {
+        for (double c = zoombrot.MANDELBROT_RE_MIN, xR = 0; xR < canVis.getWidth(); c += precisionX, xR++) {
+            for (double ci = zoombrot.MANDELBROT_IM_MIN, yR = 0; yR < canVis.getHeight(); ci += precisionY, yR++) {
                 if (zoombrot.isMandelbrot()) {
                     convergenceValue = checkConvergence(ci, c, 0, 0, zoombrot.getConvergenceSteps());
                 } else { //is Julia
