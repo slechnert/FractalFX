@@ -9,23 +9,35 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 import java.io.IOException;
+import java.sql.SQLException;
 
 
 public class Main extends Application {
 
-
+public boolean debug = true;
+public User user;
     @Override
-    public void start(Stage primaryStage) throws IOException {
+    public void start(Stage primaryStage) throws IOException, SQLException {
 
 
 //login startup
         FXMLLoader loader = new FXMLLoader(); //instantiating my loader
-        loader.setLocation(getClass().getResource("login.fxml")); //loading the first scene
-//        loader.setLocation(getClass().getResource("visualizer.fxml")); //loading the first scene
-        Parent root = loader.load(); //assigning the first scene from the loader to a variable
+        Parent root;
+        if(!debug) {
+            loader.setLocation(getClass().getResource("login.fxml")); // start with login
+            root = loader.load(); //assigning the first scene from the loader to a variable
+        } else {
+            loader.setLocation(getClass().getResource("visualizer.fxml")); // cut to visualizer
+            DAO dao = new DAO();
+            user = dao.getUser("simon");
+            dao.fillUserCustomSets(user);
+            root = loader.load(); //assigning the first scene from the loader to a variable
+            ControllerVisualizer cv = loader.getController();
+            cv.initData(user);
+        }
+        //loading the first scene
         primaryStage.setScene(new Scene(root)); //assigning the variable to the stage
         root.getStylesheets().add(getClass().getResource("Font.css").toExternalForm());
-//        primaryStage.initStyle(StageStyle.UNDECORATED);
         primaryStage.getScene().setFill(Color.TRANSPARENT);
         primaryStage.initStyle(StageStyle.TRANSPARENT);
         primaryStage.show();

@@ -140,10 +140,7 @@ public class ControllerVisualizer implements Initializable {
     }
 
     public boolean isNewColor() {
-        if (allColors.contains(brot.getConvergenceColor())) {
-            return false;
-        }
-        return true;
+        return !allColors.contains(brot.getConvergenceColor());
     }
 
     public boolean isNewBrot() {
@@ -352,8 +349,8 @@ public class ControllerVisualizer implements Initializable {
     //pixelwriter paint
     private void paintSet(GraphicsContext ctx, Mandelbrot brot) {
         double precision = Math.max((brot.MANDELBROT_RE_MAX - brot.MANDELBROT_RE_MIN) / canVis.getWidth(), (brot.MANDELBROT_IM_MAX - brot.MANDELBROT_IM_MIN) / canVis.getHeight());
-        double precisionX = (brot.MANDELBROT_RE_MAX - brot.MANDELBROT_RE_MIN) / canVis.getWidth();
-        double precisionY = (brot.MANDELBROT_IM_MAX - brot.MANDELBROT_IM_MIN) / canVis.getHeight();
+//        double precisionX = (brot.MANDELBROT_RE_MAX - brot.MANDELBROT_RE_MIN) / canVis.getWidth();
+//        double precisionY = (brot.MANDELBROT_IM_MAX - brot.MANDELBROT_IM_MIN) / canVis.getHeight();
         double convergenceValue;
         PixelWriter p = ctx.getPixelWriter();
 

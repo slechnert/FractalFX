@@ -12,15 +12,6 @@ public class DAO {
 
 
     public DAO() {
-//        try {
-//            Class.forName("com.mysql.jdbc.Driver");
-//        } catch (ClassNotFoundException e) {
-//            System.out.println("Driver couldn't be loaded");
-//            e.printStackTrace();
-//        }
-//        System.out.println("Driver was loaded");
-
-
     }
 
     private Connection openConnection() throws SQLException {
