@@ -103,13 +103,13 @@ public class LoginController implements Initializable {
         pause.play();
     }
 
-    boolean debug = false;
+    boolean debug = true;
 
     @FXML
     private void login() throws IOException, SQLException {
         if (debug) {
             FXMLLoader debug = new FXMLLoader();
-            Parent visParent = FXMLLoader.load(getClass().getResource("visualizer.fxml"));
+            Parent visParent = debug.load(getClass().getResource("visualizer.fxml"));
             Scene visScene = new Scene(visParent);
             Stage windoof = (Stage) (loginButton.getScene().getWindow());
             windoof.hide();
@@ -117,12 +117,12 @@ public class LoginController implements Initializable {
             windoof.show();
         } else {
             if (checkLogin()) {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("visualizer.fxml"));
-                // TODO has to be loaded to set user, cant be loaded without user set ?!
-                ControllerVisualizer cv = loader.getController();
-                Parent visParent = loader.load();
+//                FXMLLoader loader = new FXMLLoader();
+                // TODO has to be loaded to set user, cant be loaded without user set ?!²
+//                ControllerVisualizer cv = loader.getController();
+                Parent visParent = FXMLLoader.load(getClass().getResource("visualizer.fxml"));
                 dao.fillUserCustomSets(loggedUser);
-                cv.setCurrentUser(loggedUser);
+//                cv.setCurrentUser(loggedUser);
                 Scene visScene = new Scene(visParent);
                 Stage windoof = (Stage) (loginButton.getScene().getWindow());
                 windoof.hide();

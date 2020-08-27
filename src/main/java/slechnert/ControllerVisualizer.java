@@ -29,10 +29,10 @@ public class ControllerVisualizer implements Initializable {
 //    public double MANDELBROT_IM_MIN = -1.1;
 //    public double MANDELBROT_IM_MAX = 1.1;
 
-    public double MANDELBROT_RE_MIN = -2;
+    public double MANDELBROT_RE_MIN = -2.56;
     public double MANDELBROT_RE_MAX = 1;
-    public double MANDELBROT_IM_MIN = -1.1;
-    public double MANDELBROT_IM_MAX = 1.1;
+    public double MANDELBROT_IM_MIN = -1;
+    public double MANDELBROT_IM_MAX = 1;
 
 
     public double JULIA_RE_MIN = -3;
@@ -46,7 +46,7 @@ public class ControllerVisualizer implements Initializable {
     public Mandelbrot brot;
     GraphicsContext gc;
 
-    private User currentUser;
+    private User currentUser = null;
     public List<CustomRGB> allCustomRGBS;
     public List<Mandelbrot> allBrote;
     public List<Color> allColors;
@@ -148,13 +148,14 @@ public class ControllerVisualizer implements Initializable {
         return true;
     }
 
-    public boolean isNewBrot(){
-        for(Mandelbrot b : allBrote){
-            if(brot.equals(b)){
+    public boolean isNewBrot() {
+        for (Mandelbrot b : allBrote) {
+            if (brot.equals(b)) {
                 brot.setFractal_ID(b.fractal_ID);
                 return false;
             }
-        } return true;
+        }
+        return true;
     }
 
 
@@ -182,12 +183,13 @@ public class ControllerVisualizer implements Initializable {
         fillAllBrote();
     }
 
-    public boolean isNewCustomSet(){
-        for(CustomSet cs : currentUser.customSetList){
-            if(cs.getFractal_ID() == brot.fractal_ID){
+    public boolean isNewCustomSet() {
+        for (CustomSet cs : currentUser.customSetList) {
+            if (cs.getFractal_ID() == brot.fractal_ID) {
                 return false;
             }
-        } return true;
+        }
+        return true;
     }
 
     @FXML
@@ -213,20 +215,20 @@ public class ControllerVisualizer implements Initializable {
             }
         }
 
-        if(!isNewBrot()){
+        if (!isNewBrot()) {
         } else {
             dao.addMandelbrot(brot);
             brot.fractal_ID = dao.getLastID();
         }
 
-        if(isNewCustomSet()){
+        if (isNewCustomSet()) {
             currentUser.customSetList.add(new CustomSet(currentUser.user_name, brot.fractal_ID, customSaveTF.getText()));
             dao.addCustomSet(new CustomSet(currentUser.user_name, brot.fractal_ID, customSaveTF.getText()));
             refresh();
             refreshCustomSetLoader();
         } else {
-            for(CustomSet cs : currentUser.customSetList){
-                if(cs.getFractal_ID() == brot.getFractal_ID()){
+            for (CustomSet cs : currentUser.customSetList) {
+                if (cs.getFractal_ID() == brot.getFractal_ID()) {
                     customSaveTF.setText(cs.getSet_name());
                 }
             }
@@ -320,7 +322,6 @@ public class ControllerVisualizer implements Initializable {
     @FXML
     public CheckBox isJulia;
 
-
     @FXML
     private void drawJulia() {
         boolean checkBoxSelected = isJulia.isSelected();
@@ -361,8 +362,8 @@ public class ControllerVisualizer implements Initializable {
         double convergenceValue;
         PixelWriter p = ctx.getPixelWriter();
 
-        for (double c = brot.MANDELBROT_RE_MIN, xR = 0; xR < canVis.getWidth(); c += precisionX, xR++) {
-            for (double ci = brot.MANDELBROT_IM_MIN, yR = 0; yR < canVis.getHeight(); ci += precisionY, yR++) {
+        for (double c = brot.MANDELBROT_RE_MIN, xR = 0; xR < canVis.getWidth(); c += precision, xR++) {
+            for (double ci = brot.MANDELBROT_IM_MIN, yR = 0; yR < canVis.getHeight(); ci += precision, yR++) {
                 if (brot.isMandelbrot()) {
                     convergenceValue = checkConvergence(ci, c, 0, 0, brot.getConvergenceSteps());
                 } else { //is Julia
@@ -481,7 +482,6 @@ public class ControllerVisualizer implements Initializable {
         colorSchemePicker.setValue(brot.getColorScheme());
     }
 
-
     //TODO for zoom get x/y and c/ci at that point to calc new RE / IM
     //TODO understand how old c/ci correlate with new drawing
 
@@ -490,8 +490,8 @@ public class ControllerVisualizer implements Initializable {
         PixelWriter p = ctx.getPixelWriter();
         double convergenceValue;
         double precision = Math.max(precisionX, precisionY);
-        for (double c = zoombrot.MANDELBROT_RE_MIN, xR = 0; xR < canVis.getWidth(); c += precisionX, xR++) {
-            for (double ci = zoombrot.MANDELBROT_IM_MIN, yR = 0; yR < canVis.getHeight(); ci += precisionY, yR++) {
+        for (double c = zoombrot.MANDELBROT_RE_MIN, xR = 0; xR < canVis.getWidth(); c += precision, xR++) {
+            for (double ci = zoombrot.MANDELBROT_IM_MIN, yR = 0; yR < canVis.getHeight(); ci += precision, yR++) {
                 if (zoombrot.isMandelbrot()) {
                     convergenceValue = checkConvergence(ci, c, 0, 0, zoombrot.getConvergenceSteps());
                 } else { //is Julia
@@ -533,7 +533,6 @@ public class ControllerVisualizer implements Initializable {
         zoomTangle.setStroke(new Color(0, 0, 0, 0));
     }
 
-
     public void drawZoomBrot() {
         double oldReMin = brot.getMANDELBROT_RE_MIN();
         double oldReMax = brot.getMANDELBROT_RE_MAX();
@@ -542,28 +541,30 @@ public class ControllerVisualizer implements Initializable {
         int oldConvergenceSteps = brot.getConvergenceSteps();
         double oldZ = brot.getZ();
         double oldZi = brot.getZi();
+        double oldPrecision = Math.max((oldReMax - oldReMin) / canVis.getWidth(), (oldImMax - oldImMin) / canVis.getHeight());
 //        Color oldConvergenceColor = brot.getConvergenceColor();
 //        Mandelbrot.ColorScheme oldColorScheme = brot.getColorScheme();
 
         //convert pixel pos to number range
-        double oldReRange;
-        double oldImRange;
+        double oldReRange = oldPrecision * canVis.getWidth();
+        double oldImRange = oldPrecision * canVis.getHeight();
         //TODO remin too low, remax to low, shift towards -x
-
-        oldReRange = oldReMax - oldReMin;
-        oldImRange = oldImMax - oldImMin;
-
+        oldReMax = oldReMin + oldReRange;
+        oldImMax = oldImMin + oldImRange;
+        double newRePer =  (oldReMax - oldReMin) / canVis.getWidth();
+        double newImPer =  (oldImMax - oldImMin) / canVis.getHeight();
         double rePerPixel = oldReRange / canVis.getWidth();
         double imPerPixel = oldImRange / canVis.getHeight();
-        double newReMin = ((zoomTangle.getLayoutX() - canVis.getLayoutX()) * rePerPixel) + oldReMin;
-        double newImMin = ((zoomTangle.getLayoutY() - canVis.getLayoutY()) * imPerPixel) + oldImMin;
+
+
+        double newReMin = ((zoomTangle.getLayoutX() - canVis.getLayoutX()) * newRePer) + oldReMin;
+        double newImMin = ((zoomTangle.getLayoutY() - canVis.getLayoutY()) * newImPer) + oldImMin;
 //        double newReMin = oldReMin+oldReRange/4;
 //        double newImMin = oldImMin+oldImRange/4;
-//        double newReMax = newReMin + oldReRange / 4;
-//        double newImMax = newImMin + oldImRange / 4;
-        double newReMax = newReMin + zoomTangle.getWidth() * rePerPixel;
-        double newImMax = newImMin + zoomTangle.getHeight() * imPerPixel;
-
+        double newReMax = newReMin + oldReRange / 4;
+        double newImMax = newImMin + oldImRange / 4;
+//        double newReMax = newReMin + zoomTangle.getWidth() * rePerPixel;
+//        double newImMax = newImMin + zoomTangle.getHeight() * imPerPixel;
 
         brot = new Mandelbrot(oldConvergenceSteps, newReMin, newReMax, newImMin, newImMax, oldZ, oldZi);
 //        brot.setColorScheme(oldColorScheme);
@@ -607,18 +608,23 @@ public class ControllerVisualizer implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-//        currentUser = dao.getUser("Simon");
+
         brot = new Mandelbrot(50, MANDELBROT_RE_MIN, MANDELBROT_RE_MAX, MANDELBROT_IM_MIN, MANDELBROT_IM_MAX, 0, 0);
         gc = canVis.getGraphicsContext2D();
+        paintSet(gc, brot);
+        currentUser = dao.getUser("Simon");
+//        if (currentUser != null) {
         initializeCustomSetLoader();
         initializeColorSchemePicker();
-        paintSet(gc, brot);
         updateStats();
         try {
             refresh();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
+//        }
+
+
     }
 
     //TODO Fix custom color scheme boundaries
