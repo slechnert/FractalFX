@@ -53,7 +53,6 @@ public class ControllerVisualizer implements Initializable {
     public List<Integer> allColorIds;
     private final DAO dao;
 
-
     public ControllerVisualizer() {
         this.dao = new DAO();
     }
@@ -74,7 +73,6 @@ public class ControllerVisualizer implements Initializable {
         customSetLoader.getItems().addAll(cbStrings);
         customSetLoader.getSelectionModel().select(currentUser.getCustomSetList().indexOf(0));
 //        customSetLoader.getSelectionModel().selectedItemProperty().addListener(((observableValue, oldV, newV) -> System.out.println("dafuq")));
-
     }
 
     public void loadCustomSet() throws SQLException {
@@ -157,7 +155,6 @@ public class ControllerVisualizer implements Initializable {
         }
         return true;
     }
-
 
     public void fillAllBrote() throws SQLException {
         if (allBrote.isEmpty() || allCustomRGBS.isEmpty()) {
@@ -542,38 +539,29 @@ public class ControllerVisualizer implements Initializable {
         double oldZ = brot.getZ();
         double oldZi = brot.getZi();
         double oldPrecision = Math.max((oldReMax - oldReMin) / canVis.getWidth(), (oldImMax - oldImMin) / canVis.getHeight());
-//        Color oldConvergenceColor = brot.getConvergenceColor();
-//        Mandelbrot.ColorScheme oldColorScheme = brot.getColorScheme();
 
         //convert pixel pos to number range
-        double oldReRange = oldPrecision * canVis.getWidth();
-        double oldImRange = oldPrecision * canVis.getHeight();
-        //TODO remin too low, remax to low, shift towards -x
+        double oldReRange = oldPrecision * (canVis.getWidth()-1);
+        double oldImRange = oldPrecision * (canVis.getHeight()-1);
         oldReMax = oldReMin + oldReRange;
         oldImMax = oldImMin + oldImRange;
-        double newRePer =  (oldReMax - oldReMin) / canVis.getWidth();
-        double newImPer =  (oldImMax - oldImMin) / canVis.getHeight();
-        double rePerPixel = oldReRange / canVis.getWidth();
-        double imPerPixel = oldImRange / canVis.getHeight();
+//        double newRePer = (oldReMax - oldReMin) / canVis.getWidth();
+//        double newImPer = (oldImMax - oldImMin) / canVis.getHeight();
+        double newRePer = oldReRange / canVis.getWidth();
+        double newImPer = oldImRange / canVis.getHeight();
 
 
         double newReMin = ((zoomTangle.getLayoutX() - canVis.getLayoutX()) * newRePer) + oldReMin;
         double newImMin = ((zoomTangle.getLayoutY() - canVis.getLayoutY()) * newImPer) + oldImMin;
-//        double newReMin = oldReMin+oldReRange/4;
-//        double newImMin = oldImMin+oldImRange/4;
         double newReMax = newReMin + oldReRange / 4;
         double newImMax = newImMin + oldImRange / 4;
 //        double newReMax = newReMin + zoomTangle.getWidth() * rePerPixel;
 //        double newImMax = newImMin + zoomTangle.getHeight() * imPerPixel;
 
         brot = new Mandelbrot(oldConvergenceSteps, newReMin, newReMax, newImMin, newImMax, oldZ, oldZi);
-//        brot.setColorScheme(oldColorScheme);
-//        brot.setConvergenceColor(oldConvergenceColor);
         brot.setConvergenceColor(colorPicker.getValue());
         brot.setColorScheme((Mandelbrot.ColorScheme) colorSchemePicker.getValue());
         brot.setConvergenceColor(colorPicker.getValue());
-//        double precisionX = (oldReRange / 4) / canVis.getWidth();
-//        double precisionY = (oldImRange / 4) / canVis.getHeight();
         double precisionX = (newReMax - newReMin) / canVis.getWidth();
         double precisionY = (newImMax - newImMin) / canVis.getHeight();
         paintZoom(canVis.getGraphicsContext2D(), brot, precisionX, precisionY);
@@ -623,8 +611,6 @@ public class ControllerVisualizer implements Initializable {
             throwables.printStackTrace();
         }
 //        }
-
-
     }
 
     //TODO Fix custom color scheme boundaries
