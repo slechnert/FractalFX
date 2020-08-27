@@ -173,6 +173,7 @@ public class ControllerVisualizer implements Initializable {
     }
 
     public void refresh() throws SQLException {
+        updateStats();
         allBrote = dao.getAllBrote();
         allCustomRGBS = dao.getAllCustomRGB(); //refresh list
         allColors = dao.getAllColors();
@@ -194,10 +195,8 @@ public class ControllerVisualizer implements Initializable {
 
         if (isNewColor()) {
             dao.addColor(brot.convergenceColor);
-            brot.setColor_ID(dao.getSpecificColorId(brot.convergenceColor));
-        } else {
-            brot.setColor_ID(dao.getSpecificColorId((brot.convergenceColor)));
         }
+        brot.setColor_ID(dao.getSpecificColorId(brot.convergenceColor));
 
         if (isUniqueRGB()) { //if new RGB factors save and get
             Double newCustomR = customR.getText().equals("") ? 1 : Double.parseDouble(customR.getText());
@@ -322,8 +321,8 @@ public class ControllerVisualizer implements Initializable {
     @FXML
     private void drawJulia() {
         boolean checkBoxSelected = isJulia.isSelected();
+        gc.clearRect(0, 0, canVis.getWidth(), canVis.getHeight());
         if (checkBoxSelected) {
-            gc.clearRect(0, 0, canVis.getWidth(), canVis.getHeight());
             if (convTF.getText().equals("")) {
                 brot = new Mandelbrot(50, JULIA_RE_MIN, JULIA_RE_MAX, JULIA_IM_MIN, JULIA_IM_MAX, 0.3, -0.5);
             } else if (Integer.parseInt(convTF.getText()) >= 1 && Integer.parseInt(convTF.getText()) <= 1000) {
@@ -334,7 +333,6 @@ public class ControllerVisualizer implements Initializable {
             zTF.setDisable(false);
             ziTF.setDisable(false);
         } else {
-            gc.clearRect(0, 0, canVis.getWidth(), canVis.getHeight());
             if (convTF.getText().equals("")) {
                 brot = new Mandelbrot(50, MANDELBROT_RE_MIN, MANDELBROT_RE_MAX, MANDELBROT_IM_MIN, MANDELBROT_IM_MAX, 0, 0);
             } else if (Integer.parseInt(convTF.getText()) >= 1 && Integer.parseInt(convTF.getText()) <= 1000) {
@@ -430,26 +428,17 @@ public class ControllerVisualizer implements Initializable {
                 factorB = Double.parseDouble(customB.getText());
             }
         }
-        switch (colorScheme) {
-            case RED:
-                return Color.color((c1 * factorR) / 255.0, (c2 * factorG) / 255.0, (c2 * factorB) / 255.0);
-            case YELLOW:
-                return Color.color((c1 * factorR) / 255.0, (c1 * factorG) / 255.0, (c2 * factorB) / 255.0);
-            case MAGENTA:
-                return Color.color((c1 * factorR) / 255.0, (c2 * factorG) / 255.0, (c1 * factorB) / 255.0);
-            case BLUE:
-                return Color.color((c2 * factorR) / 255.0, (c2 * factorG) / 255.0, (c1 * factorB) / 255.0);
-            case GREEN:
-                return Color.color((c2 * factorR) / 255.0, (c1 * factorG) / 255.0, (c2 * factorB) / 255.0);
-            case CYAN:
-                return Color.color((c2 * factorR) / 255.0, (c1 * factorG) / 255.0, (c1 * factorB) / 255.0);
-            case BLACK:
-                return Color.color((c2 * factorR) / 255.0, (c2 * factorG) / 255.0, (c2 * factorB) / 255.0);
-            case WHITE:
-                return Color.color((c1 * factorR) / 255.0, (c1 * factorG) / 255.0, (c1 * factorB) / 255.0);
-            default:
-                return Color.color(c2 / 255.0, c1 / 255.0, c2 / 255.0);
-        }
+        return switch (colorScheme) {
+            case RED -> Color.color((c1 * factorR) / 255.0, (c2 * factorG) / 255.0, (c2 * factorB) / 255.0);
+            case YELLOW -> Color.color((c1 * factorR) / 255.0, (c1 * factorG) / 255.0, (c2 * factorB) / 255.0);
+            case MAGENTA -> Color.color((c1 * factorR) / 255.0, (c2 * factorG) / 255.0, (c1 * factorB) / 255.0);
+            case BLUE -> Color.color((c2 * factorR) / 255.0, (c2 * factorG) / 255.0, (c1 * factorB) / 255.0);
+            case GREEN -> Color.color((c2 * factorR) / 255.0, (c1 * factorG) / 255.0, (c2 * factorB) / 255.0);
+            case CYAN -> Color.color((c2 * factorR) / 255.0, (c1 * factorG) / 255.0, (c1 * factorB) / 255.0);
+            case BLACK -> Color.color((c2 * factorR) / 255.0, (c2 * factorG) / 255.0, (c2 * factorB) / 255.0);
+            case WHITE -> Color.color((c1 * factorR) / 255.0, (c1 * factorG) / 255.0, (c1 * factorB) / 255.0);
+            default -> Color.color(c2 / 255.0, c1 / 255.0, c2 / 255.0);
+        };
     }
 
     @FXML
@@ -478,9 +467,6 @@ public class ControllerVisualizer implements Initializable {
         convTF.setText(String.valueOf(brot.getConvergenceSteps()));
         colorSchemePicker.setValue(brot.getColorScheme());
     }
-
-    //TODO for zoom get x/y and c/ci at that point to calc new RE / IM
-    //TODO understand how old c/ci correlate with new drawing
 
     //ZoomDraw
     private void paintZoom(GraphicsContext ctx, Mandelbrot zoombrot, double precisionX, double precisionY) {
@@ -541,16 +527,16 @@ public class ControllerVisualizer implements Initializable {
         double oldPrecision = Math.max((oldReMax - oldReMin) / canVis.getWidth(), (oldImMax - oldImMin) / canVis.getHeight());
 
         //convert pixel pos to number range
-        double oldReRange = oldPrecision * (canVis.getWidth()-1);
-        double oldImRange = oldPrecision * (canVis.getHeight()-1);
-        oldReMax = oldReMin + oldReRange;
-        oldImMax = oldImMin + oldImRange;
+        double oldReRange = oldPrecision * (canVis.getWidth() - 1);
+        double oldImRange = oldPrecision * (canVis.getHeight() - 1);
+//        oldReMax = oldReMin + oldReRange;
+//        oldImMax = oldImMin + oldImRange;
 //        double newRePer = (oldReMax - oldReMin) / canVis.getWidth();
 //        double newImPer = (oldImMax - oldImMin) / canVis.getHeight();
         double newRePer = oldReRange / canVis.getWidth();
         double newImPer = oldImRange / canVis.getHeight();
 
-
+        //get new number range
         double newReMin = ((zoomTangle.getLayoutX() - canVis.getLayoutX()) * newRePer) + oldReMin;
         double newImMin = ((zoomTangle.getLayoutY() - canVis.getLayoutY()) * newImPer) + oldImMin;
         double newReMax = newReMin + oldReRange / 4;
@@ -594,27 +580,23 @@ public class ControllerVisualizer implements Initializable {
         drawJulia();
     }
 
+    public void initData(User user) throws SQLException {
+        currentUser = user;
+//        currentUser = dao.getUser("Simon");
+        initializeCustomSetLoader();
+        initializeColorSchemePicker();
+        refresh();
+    }
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
         brot = new Mandelbrot(50, MANDELBROT_RE_MIN, MANDELBROT_RE_MAX, MANDELBROT_IM_MIN, MANDELBROT_IM_MAX, 0, 0);
         gc = canVis.getGraphicsContext2D();
         paintSet(gc, brot);
-        currentUser = dao.getUser("Simon");
-//        if (currentUser != null) {
-        initializeCustomSetLoader();
-        initializeColorSchemePicker();
-        updateStats();
-        try {
-            refresh();
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
-//        }
     }
 
     //TODO Fix custom color scheme boundaries
-    //TODO number range + zoom
 
     public User getCurrentUser() {
         return currentUser;

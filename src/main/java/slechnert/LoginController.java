@@ -103,7 +103,7 @@ public class LoginController implements Initializable {
         pause.play();
     }
 
-    boolean debug = true;
+    boolean debug = false;
 
     @FXML
     private void login() throws IOException, SQLException {
@@ -117,12 +117,12 @@ public class LoginController implements Initializable {
             windoof.show();
         } else {
             if (checkLogin()) {
-//                FXMLLoader loader = new FXMLLoader();
-                // TODO has to be loaded to set user, cant be loaded without user set ?!²
-//                ControllerVisualizer cv = loader.getController();
-                Parent visParent = FXMLLoader.load(getClass().getResource("visualizer.fxml"));
                 dao.fillUserCustomSets(loggedUser);
-//                cv.setCurrentUser(loggedUser);
+                FXMLLoader loader = new FXMLLoader();
+                loader.setLocation(getClass().getResource("visualizer.fxml"));
+                Parent visParent = loader.load();
+                ControllerVisualizer cv = loader.getController();
+                cv.initData(loggedUser);
                 Scene visScene = new Scene(visParent);
                 Stage windoof = (Stage) (loginButton.getScene().getWindow());
                 windoof.hide();
